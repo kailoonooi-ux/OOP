@@ -43,6 +43,7 @@ h4{margin:16px 0 6px;font-size:16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:16px 0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid2>*,.grid4>*{min-width:0}
 @media(max-width:820px){.grid2,.grid4{grid-template-columns:1fr}.progress .bar{width:60px}h2{font-size:24px}}
 .oneline{border-left:5px solid var(--c,var(--ink));background:#fff;padding:14px 18px;border-radius:0 var(--r) var(--r) 0;font-size:18px;font-weight:600;margin:16px 0}
 .analogy{display:flex;gap:14px;align-items:flex-start;background:#fffbea;border:1px solid #f3e3a1;border-radius:var(--r);padding:14px 18px}
@@ -136,6 +137,13 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
 @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 .done-banner{background:#e9f8f0;border:1px solid #bfe8d1;border-radius:12px;padding:10px 14px;font-weight:700;color:#176b41;margin-top:12px}
 .next-row{display:flex;justify-content:space-between;margin-top:30px;gap:10px;flex-wrap:wrap}
+.mem{display:flex;flex-direction:column;gap:8px;min-height:60px}
+.memvar{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:14px}
+.memvar code{background:#eceef7;padding:2px 8px;border-radius:6px;font-weight:700}
+.memobj{border:2px solid;border-radius:10px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;background:#fff;animation:pop .3s}
+.tag{display:inline-block;color:#fff;border-radius:6px;padding:0 6px;font-size:12px;font-weight:700}
+button.pill{border:none;cursor:pointer;font:inherit;font-size:12px;font-weight:700}
+button.pill:hover{background:var(--ink);color:#fff}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;opacity:0;transition:.3s;pointer-events:none;z-index:50}
 .toast.show{opacity:1}
 </style>
@@ -149,6 +157,7 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
   </div>
   <nav class="tabs" id="tabs">
     <a href="#start" data-v="start">🏠 Start</a>
+    <a href="#foundations" data-v="foundations">🧱 OOP Basics</a>
     <a href="#encapsulation" data-v="encapsulation">🔒 Encapsulation</a>
     <a href="#inheritance" data-v="inheritance">🧬 Inheritance</a>
     <a href="#polymorphism" data-v="polymorphism">🎭 Polymorphism</a>
@@ -174,7 +183,7 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
     <a class="pillar-card" href="#inheritance" style="background:var(--inh)"><b>I</b><h4>Inheritance</h4><p>A child class <b>is a</b> kind of parent and reuses its code.</p></a>
     <a class="pillar-card" href="#encapsulation" style="background:var(--enc)"><b>E</b><h4>Encapsulation</h4><p>Lock up the data. Only allow safe changes.</p></a>
   </div>
-  <p style="color:var(--muted);font-size:14px">We'll learn them in the order <b>E → I → P → A</b>, because each one builds on the one before.</p>
+  <p style="color:var(--muted);font-size:14px">First the <a href="#foundations">OOP Basics</a> (classes, objects, constructors, kinds of classes). Then the pillars in the order <b>E → I → P → A</b>, because each one builds on the one before.</p>
 
   <h3>Quick refresher: class vs object</h3>
   <div class="grid2">
@@ -196,13 +205,155 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
 
   <h3>How to use this tutorial</h3>
   <ol class="steps">
+    <li><b>Start with OOP Basics</b>: what a class, object, constructor and <code class="i">static</code> really are, and the kinds of classes. Don't skip it, because the pillars build on it.</li>
     <li><b>Read each pillar tab</b>, play with the interactive demo, and finish the quick check. A ✓ appears in the menu when you get them all right.</li>
     <li><b>Code Lab</b>: write real C# for 6 exercises. The page gives instant feedback, and the practice project on your Mac runs real tests.</li>
     <li><b>Exam Problems</b>: new scenarios like the ones in a practical test. Plan the design first, then code it.</li>
     <li><b>Mock Test</b>: 16 mixed questions, including tricky "what's the output?" ones. Aim for 14/16 or better.</li>
     <li>Keep the <b>Cheat Sheet</b> open while you practise.</li>
   </ol>
-  <div class="next-row"><span></span><a class="btn primary" href="#encapsulation">Start with Encapsulation →</a></div>
+  <div class="next-row"><span></span><a class="btn primary" href="#foundations">Start with OOP Basics →</a></div>
+</section>
+
+<!-- ============================ FOUNDATIONS ============================ -->
+<section class="view" id="v-foundations" hidden>
+  <div class="kicker" style="color:var(--ink)">Before the pillars</div>
+  <h2>🧱 OOP Basics: classes, objects &amp; constructors</h2>
+  <p class="lead">The four pillars are rules for designing <b>classes</b>. If "class", "object", "constructor" and "static" still feel fuzzy, the pillars will too. Make sure this page feels easy first.</p>
+  <div class="row" style="margin:6px 0 4px">
+    <button class="pill jump" data-jump="f-what">1 · What is OOP?</button>
+    <button class="pill jump" data-jump="f-anatomy">2 · Inside a class</button>
+    <button class="pill jump" data-jump="f-objects">3 · Objects &amp; references</button>
+    <button class="pill jump" data-jump="f-ctor">4 · Constructors</button>
+    <button class="pill jump" data-jump="f-static">5 · static</button>
+    <button class="pill jump" data-jump="f-kinds">6 · Kinds of classes</button>
+  </div>
+
+  <h3 id="f-what">1 · What is object-oriented programming?</h3>
+  <div class="oneline">OOP organises a program around <b>objects</b>. Each object bundles <b>data</b> (what it knows) and <b>behaviour</b> (what it can do), and objects work together by calling each other's methods.</div>
+  <p>You may have started with <b>procedural</b> programming: variables in one place, functions in another, and the program runs top to bottom. That works for small programs. As programs grow, it gets hard to keep track of which data belongs to which function and who is allowed to change what. OOP fixes this by keeping related data and code <b>in one place</b>.</p>
+  <div class="grid2">
+    <div class="card" style="margin:0"><span class="pill" style="background:#fff5e8;color:#8a5a12">Procedural</span>
+      <pre class="code" data-code="fProc"></pre>
+      <p style="font-size:14.5px;margin:0">The data is spread over separate arrays. If you add a name and forget its score, the arrays go out of sync. Any code anywhere can change <code class="i">scores[0]</code>.</p></div>
+    <div class="card" style="margin:0"><span class="pill" style="background:#e9f8f0;color:var(--good)">Object-oriented</span>
+      <pre class="code" data-code="fOop"></pre>
+      <p style="font-size:14.5px;margin:0">Each <b>Student</b> object carries its own name and score, and it knows how to answer "have I passed?" itself.</p></div>
+  </div>
+  <div class="tip"><h4>💡 How to "think in objects"</h4>Look at the problem and ask: <b>what are the things?</b> (Student, Book, Car.) For each one, <b>what does it know?</b> That gives you fields and properties, such as name and score. Then <b>what can it do, or what can you ask it?</b> That gives you methods, such as HasPassed() and Borrow(). This is exactly step 1 of the exam method you'll use later.</div>
+  <table>
+    <tr><th>Benefit</th><th>What it means for you</th></tr>
+    <tr><td><b>Organisation</b></td><td>Code for "a Book" lives in the Book class, so you know where to look.</td></tr>
+    <tr><td><b>Reuse</b></td><td>Write the class once and create as many objects as you need. Inheritance reuses even more.</td></tr>
+    <tr><td><b>Safety</b></td><td>Objects protect their own data (Encapsulation, pillar 1).</td></tr>
+    <tr><td><b>Easy to extend</b></td><td>Add a new kind of thing without rewriting old code (Polymorphism, pillar 3).</td></tr>
+  </table>
+
+  <h3 id="f-anatomy">2 · What's inside a class?</h3>
+  <p>A <b>class</b> is the blueprint, and an <b>object</b> (also called an <i>instance</i>) is one thing built from it. A class is made of <b>members</b>:</p>
+  <pre class="code" data-code="fAnatomy"></pre>
+  <table>
+    <tr><th>Member</th><th>Purpose</th><th>Analogy (a phone)</th></tr>
+    <tr><td><b>Field</b> <code class="i">private int _timesBorrowed;</code></td><td>Raw data stored inside each object. Usually <code class="i">private</code>.</td><td>The battery level inside the phone</td></tr>
+    <tr><td><b>Property</b> <code class="i">public string Title { get; }</code></td><td>A "smart field": controlled read/write access to data.</td><td>The battery % shown on screen</td></tr>
+    <tr><td><b>Constructor</b> <code class="i">public Book(...)</code></td><td>Sets up a <b>new</b> object. Same name as the class, no return type.</td><td>The factory setting up a new phone</td></tr>
+    <tr><td><b>Method</b> <code class="i">public void Borrow()</code></td><td>An action the object can perform.</td><td>Make a call, take a photo</td></tr>
+  </table>
+  <div class="mistake"><h4>⚠️ Field vs property: what's the difference?</h4>A <b>field</b> is a plain variable inside the object. A <b>property</b> looks like a field from outside (<code class="i">book.Title</code>) but is really a pair of tiny methods (<code class="i">get</code>/<code class="i">set</code>), so you can add rules or make it read-only. <b>Convention:</b> fields are <code class="i">private</code> with names like <code class="i">_camelCase</code>, and properties are <code class="i">public</code> with names in <code class="i">PascalCase</code>.</div>
+
+  <h3 id="f-objects">3 · Objects &amp; references: what <code class="i">new</code> really does</h3>
+  <p><code class="i">new Book(...)</code> creates an object in memory and gives you back a <b>reference</b>, which you can think of as its address. A variable doesn't hold the object itself. It holds the <b>arrow pointing to it</b>. This explains a lot of "weird" bugs.</p>
+  <pre class="code" data-code="fRefs"></pre>
+  <div class="card">
+    <h4 style="margin-top:0">Interactive: run the lines and watch memory</h4>
+    <div class="row">
+      <button class="btn small" data-ref="newA">Book a = new Book("Dune");</button>
+      <button class="btn small" data-ref="bIsA">Book b = a;</button>
+      <button class="btn small" data-ref="newC">Book c = new Book("Dune");</button>
+      <button class="btn small" data-ref="bBorrow">b.Borrow();</button>
+      <button class="btn small" data-ref="cNull">c = null;</button>
+      <button class="btn small" data-ref="reset">↺ Reset</button>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div><h4 style="margin-top:0">Variables (the arrows)</h4><div id="refVars" class="mem"></div></div>
+      <div><h4 style="margin-top:0">Objects in memory (the heap)</h4><div id="refObjs" class="mem"></div></div>
+    </div>
+    <div class="console" id="refLog" style="min-height:60px;margin-top:10px"></div>
+  </div>
+  <div class="tip"><h4>Remember</h4><ul>
+    <li><code class="i">Book b = a;</code> copies the <b>arrow</b>, not the object, so a and b are two names for one book.</li>
+    <li><code class="i">a == b</code> on objects asks "do they point to the <b>same</b> object?", not "do they look the same?"</li>
+    <li>Calling a method on <code class="i">null</code> crashes with a <b>NullReferenceException</b>, one of the most common runtime errors.</li>
+  </ul></div>
+
+  <h3 id="f-ctor">4 · Constructors: why they exist</h3>
+  <div class="oneline">A constructor's job is to make sure that <b>every new object starts in a valid, ready-to-use state</b>. It runs automatically, exactly once, when you write <code class="i">new</code>.</div>
+  <div class="analogy"><div class="em">🏭</div><div>Think of a car factory. A car can't leave the factory without wheels, an engine and a licence plate. The constructor is that final inspection: it <b>sets the starting values</b> and <b>refuses</b> to produce a broken object.</div></div>
+  <h4>Rules of a constructor</h4>
+  <ul>
+    <li>It has the <b>same name as the class</b> and <b>no return type</b> (not even <code class="i">void</code>).</li>
+    <li>It usually takes <b>parameters</b> for the values every object must have.</li>
+    <li>It can <b>validate</b> and <code class="i">throw</code> an exception, so a bad object is never created.</li>
+    <li>A class can have <b>several</b> constructors with different parameters (<b>overloading</b>). They can share code with <code class="i">: this(...)</code>.</li>
+    <li>In a child class, <code class="i">: base(...)</code> calls the <b>parent's</b> constructor first. You'll see this in Inheritance.</li>
+  </ul>
+  <pre class="code" data-code="fCtor"></pre>
+  <div class="card">
+    <h4 style="margin-top:0">Interactive: the constructor playground</h4>
+    <div class="row">
+      <select id="ctorPick">
+        <option value="2">new Player(name, level)</option>
+        <option value="1">new Player(name)</option>
+        <option value="0">new Player()</option>
+      </select>
+      <span id="ctorName">name <input type="text" id="cName" value="Aisha" style="width:110px"></span>
+      <span id="ctorLevel">level <input type="number" id="cLevel" value="5" style="width:70px"></span>
+      <button class="btn primary small" id="ctorGo">Create</button>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div><div class="console" id="ctorTrace" style="min-height:150px"><span class="dim">// pick a constructor and press Create to see each step</span></div></div>
+      <div><div class="objbox" id="ctorObjs" style="margin-top:0"></div><p style="font-size:14px;color:var(--muted)">Static <code class="i">Player.Count</code> = <b id="ctorCount" class="mono">0</b> (one number shared by the whole class)</p></div>
+    </div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:0">Try an empty name, a level of 0, and <code class="i">new Player()</code> with no arguments.</p>
+  </div>
+  <div class="grid2">
+    <div><h4>The free "default" constructor</h4><pre class="code" data-code="fDefault"></pre></div>
+    <div><h4>The <code class="i">this</code> keyword</h4><pre class="code" data-code="fThis"></pre>
+      <p style="font-size:14.5px"><code class="i">this</code> means "the current object". You mainly need it when a parameter has the same name as a field.</p></div>
+  </div>
+
+  <h3 id="f-static">5 · <code class="i">static</code>: belongs to the class, not to each object</h3>
+  <p>Normal (instance) members exist <b>once per object</b>: every Player has its own Name. A <code class="i">static</code> member exists <b>once for the whole class</b>, and you use it through the <b>class name</b>.</p>
+  <pre class="code" data-code="fStatic"></pre>
+  <div class="tip"><h4>Instance or static? Ask: "does this belong to ONE object, or to the idea as a whole?"</h4>A student's <b>name</b> belongs to one student, so it's an instance member. The <b>number of students created</b> or a <b>helper that checks a name</b> isn't about any one student, so it's static. <code class="i">Math.Max()</code> and <code class="i">Console.WriteLine()</code> are static, which is why you never write <code class="i">new Math()</code>.</div>
+
+  <h3 id="f-kinds">6 · Kinds of classes</h3>
+  <p>C# lets you mark a class to say <b>how it is allowed to be used</b>. You'll meet these in tests:</p>
+  <pre class="code" data-code="fKinds"></pre>
+  <table>
+    <tr><th>Kind</th><th>Can you <code class="i">new</code> it?</th><th>Can it be inherited?</th><th>Use it when…</th></tr>
+    <tr><td><b>Concrete</b> (normal)</td><td>✅</td><td>✅</td><td>It's a complete, real thing: <code class="i">Dog</code>, <code class="i">Student</code>, <code class="i">BankAccount</code>.</td></tr>
+    <tr><td><b>abstract</b></td><td>❌ CS0144</td><td>✅ it <i>must</i> be</td><td>It's a general idea that only makes sense as specific kinds: <code class="i">Shape</code>, <code class="i">Animal</code>, <code class="i">Employee</code>. <a href="#abstraction">Pillar 4</a></td></tr>
+    <tr><td><b>sealed</b></td><td>✅</td><td>❌ CS0509</td><td>It's finished and must not be changed by subclasses, for safety or design: <code class="i">Password</code>, C#'s own <code class="i">string</code>.</td></tr>
+    <tr><td><b>static</b></td><td>❌ CS0712</td><td>❌</td><td>It's only a toolbox of helpers with no data per object: <code class="i">Math</code>, <code class="i">Converter</code>.</td></tr>
+    <tr><td><b>interface</b> (not a class)</td><td>❌</td><td>Implemented (many allowed)</td><td>You need a contract of abilities shared by unrelated classes: <code class="i">IPrintable</code>. <a href="#abstraction">Pillar 4</a></td></tr>
+    <tr><td><b>partial</b></td><td>✅</td><td>✅</td><td>One class is split across files, usually by tools such as Windows Forms designers. You rarely write it yourself.</td></tr>
+  </table>
+  <p style="font-size:14px;color:var(--muted)">You might also see <code class="i">struct</code> (a small <i>value</i> type that's copied rather than shared by reference, such as <code class="i">int</code> and <code class="i">DateTime</code>) and <code class="i">record</code> (a class mainly for holding data). Tests on the four pillars focus on the table above.</p>
+
+  <div class="card" id="kindSorter"></div>
+
+  <div class="exam"><h4>📝 Definitions examiners ask for</h4><ul>
+    <li><b>Class:</b> a blueprint or template that defines the data (fields and properties) and behaviour (methods) of a type of object.</li>
+    <li><b>Object / instance:</b> a specific thing created from a class with <code class="i">new</code>, with its own copy of the instance data.</li>
+    <li><b>Constructor:</b> a special method with the same name as the class and no return type. It runs automatically when an object is created and initialises it to a valid state.</li>
+    <li><b>Static member:</b> belongs to the class itself rather than to any object, is shared by all instances, and is accessed with <code class="i">ClassName.Member</code>.</li>
+    <li><b>Abstract class:</b> a class that cannot be instantiated and is meant to be inherited. It may contain abstract methods that subclasses must override.</li>
+  </ul></div>
+
+  <h3>Quick check</h3>
+  <div id="quiz-foundations"></div>
+  <div class="next-row"><a class="btn" href="#start">← Start</a><a class="btn primary" href="#encapsulation">Next: Pillar 1, Encapsulation →</a></div>
 </section>
 
 <!-- ============================ ENCAPSULATION ============================ -->
@@ -255,7 +406,7 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
 
   <h3>Quick check</h3>
   <div id="quiz-encapsulation"></div>
-  <div class="next-row"><a class="btn" href="#start">← Start</a><a class="btn primary" href="#inheritance">Next: Inheritance →</a></div>
+  <div class="next-row"><a class="btn" href="#foundations">← OOP Basics</a><a class="btn primary" href="#inheritance">Next: Inheritance →</a></div>
 </section>
 
 <!-- ============================ INHERITANCE ============================ -->
@@ -529,6 +680,26 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
     <tr><td><b style="color:var(--abs)">Abstraction</b></td><td>Show <b>what</b>, hide <b>how</b></td><td><code class="i">abstract class</code>, <code class="i">abstract</code> method, <code class="i">interface</code></td><td>"should never be created directly", "every X must be able to…", "contract"</td></tr>
   </table>
 
+  <h3>Basics in one table</h3>
+  <table>
+    <tr><th>Term</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>Class</td><td>Blueprint: data and behaviour</td><td><code class="i">public class Book { ... }</code></td></tr>
+    <tr><td>Object / instance</td><td>One thing made from the class</td><td><code class="i">Book b = new Book("Dune", "Herbert");</code></td></tr>
+    <tr><td>Constructor</td><td>Same name as the class, no return type. Sets up a valid new object.</td><td><code class="i">public Book(string title, string author) { ... }</code></td></tr>
+    <tr><td>Constructor chaining</td><td>One constructor reuses another</td><td><code class="i">public Player(string n) : this(n, 1) { }</code></td></tr>
+    <tr><td><code class="i">this</code></td><td>The current object</td><td><code class="i">this.x = x;</code></td></tr>
+    <tr><td><code class="i">static</code></td><td>Belongs to the class and is shared by all objects</td><td><code class="i">Player.Count</code>, <code class="i">Math.Max(3, 7)</code></td></tr>
+    <tr><td>Reference</td><td>A variable holds an arrow to an object, not the object itself</td><td><code class="i">Book b = a;</code> means one object with two names</td></tr>
+  </table>
+  <table style="margin-top:12px">
+    <tr><th>Kind of class</th><th><code class="i">new</code> it?</th><th>Inherit from it?</th><th>Typical use</th></tr>
+    <tr><td>Concrete (normal)</td><td>✅</td><td>✅</td><td>Real things: Student, Car</td></tr>
+    <tr><td><code class="i">abstract</code></td><td>❌</td><td>✅ must</td><td>General ideas: Shape, Employee</td></tr>
+    <tr><td><code class="i">sealed</code></td><td>✅</td><td>❌</td><td>Final, must not be extended</td></tr>
+    <tr><td><code class="i">static</code></td><td>❌</td><td>❌</td><td>Helper toolbox: Math, Converter</td></tr>
+    <tr><td><code class="i">interface</code></td><td>❌</td><td>implement (many)</td><td>"Can do" contracts: IPrintable</td></tr>
+  </table>
+
   <h3>Syntax you must be able to write from memory</h3>
   <pre class="code" data-code="cheatAll"></pre>
 
@@ -542,6 +713,8 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
     <tr><td>CS0534</td><td>Does not implement inherited abstract member</td><td>Add the missing <code class="i">override</code> method.</td></tr>
     <tr><td>CS0535</td><td>Does not implement interface member</td><td>Add the missing method with <code class="i">public</code>.</td></tr>
     <tr><td>CS0144</td><td>Cannot create an instance of the abstract type or interface</td><td><code class="i">new</code> a concrete child class instead.</td></tr>
+    <tr><td>CS0509</td><td>Cannot derive from sealed type</td><td>The parent is <code class="i">sealed</code>. Don't inherit from it.</td></tr>
+    <tr><td>CS0712</td><td>Cannot create an instance of the static class</td><td>Call it with the class name: <code class="i">Converter.CToF(30)</code>.</td></tr>
     <tr><td>CS0513</td><td>Abstract member in non-abstract class</td><td>Mark the class <code class="i">abstract</code>.</td></tr>
     <tr><td>CS0114</td><td><i>Warning:</i> hides inherited member</td><td>You probably meant <code class="i">override</code>, not a new method.</td></tr>
   </table>
@@ -572,6 +745,173 @@ th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05
 //  CODE SNIPPETS (all compiled & tested with .NET 8)
 // ===================================================================
 const CODE = {
+fProc: String.raw`// Procedural: data and functions live separately
+string[] names  = { "Mei", "Ravi" };
+int[]    scores = { 85, 62 };
+
+static bool HasPassed(int score) => score >= 50;
+
+for (int i = 0; i < names.Length; i++)
+    Console.WriteLine($"{names[i]} passed: {HasPassed(scores[i])}");`,
+fOop: String.raw`// OOP: data + behaviour bundled into one object
+public class Student
+{
+    public string Name { get; }
+    public int Score { get; }
+
+    public Student(string name, int score)
+    {
+        Name = name;
+        Score = score;
+    }
+
+    public bool HasPassed() => Score >= 50;
+}
+
+var students = new List<Student>
+{
+    new Student("Mei", 85),
+    new Student("Ravi", 62)
+};
+foreach (Student s in students)
+    Console.WriteLine($"{s.Name} passed: {s.HasPassed()}");`,
+fAnatomy: String.raw`public class Book                                       // ① class declaration
+{
+    private int _timesBorrowed;                         // ② FIELD: data stored inside each object
+
+    public string Title { get; }                        // ③ PROPERTY: controlled access to data
+    public string Author { get; }
+    public static int TotalBooks { get; private set; }  // ④ STATIC: ONE value shared by all books
+
+    public Book(string title, string author)            // ⑤ CONSTRUCTOR: runs once, on "new"
+    {
+        Title = title;
+        Author = author;
+        TotalBooks++;
+    }
+
+    public void Borrow()                                // ⑥ METHOD: something the object can DO
+    {
+        _timesBorrowed++;
+    }
+
+    public override string ToString()                   // ⑦ every class secretly inherits from "object"
+        => $"{Title} by {Author} (borrowed {_timesBorrowed}x)";
+}
+
+Book myBook = new Book("Dune", "Herbert");   // create an object (an "instance")
+myBook.Borrow();                             // call a method on it
+Console.WriteLine(myBook.Title);             // read a property  → Dune`,
+fRefs: String.raw`Book a = new Book("Dune", "Herbert");
+Book b = a;                  // NOT a copy: b points to the SAME object
+Book c = new Book("Dune", "Herbert");   // a second, separate object
+
+b.Borrow();
+Console.WriteLine(a);        // Dune by Herbert (borrowed 1x)   ← a sees b's change!
+Console.WriteLine(c);        // Dune by Herbert (borrowed 0x)
+Console.WriteLine(a == b);   // True   (same object)
+Console.WriteLine(a == c);   // False  (look alike, but different objects)
+
+c = null;                    // c now points to nothing
+c.Borrow();                  // 💥 NullReferenceException at runtime`,
+fCtor: String.raw`public class Player
+{
+    public static int Count { get; private set; }
+
+    public string Name { get; }
+    public int Level { get; }
+    public int Health { get; }
+
+    // ① Main constructor: VALIDATES, so a Player can never start broken
+    public Player(string name, int level)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name is required");
+        if (level < 1)
+            throw new ArgumentException("Level must be at least 1");
+
+        Name = name;
+        Level = level;
+        Health = level * 100;            // a starting value worked out from the inputs
+        Count++;
+    }
+
+    // ② Overloaded constructor: fills in a default and CHAINS to ① with ": this(...)"
+    public Player(string name) : this(name, 1) { }
+}
+
+Player p1 = new Player("Aisha", 5);   // Level 5, Health 500
+Player p2 = new Player("Ben");        // Level 1, Health 100 (via constructor ①)
+Player p3 = new Player("", 3);        // 💥 ArgumentException: the bad object is never created`,
+fDefault: String.raw`public class Note
+{
+    public string Text = "";
+}
+// ✅ Works: C# secretly adds  public Note() { }
+Note n = new Note();
+
+public class Song
+{
+    public Song(string title) { }
+}
+// ❌ CS7036: once you write ANY constructor,
+//    the free empty one disappears
+Song s = new Song();`,
+fThis: String.raw`public class Point
+{
+    private int x, y;
+
+    public Point(int x, int y)
+    {
+        // this.x = the FIELD
+        //      x = the PARAMETER
+        this.x = x;
+        this.y = y;
+    }
+}
+// Naming fields _x avoids the clash,
+// so then "this" isn't needed.`,
+fStatic: String.raw`public class Player
+{
+    public static int Count { get; private set; }   // ONE number for the whole class
+    public string Name { get; }                     // one per object
+
+    public Player(string name) { Name = name; Count++; }
+
+    public static bool IsValidName(string n)        // static method: no object needed
+        => !string.IsNullOrWhiteSpace(n);
+}
+
+new Player("Mei");
+new Player("Ravi");
+Console.WriteLine(Player.Count);              // 2      ← use the CLASS name, not an object
+Console.WriteLine(Player.IsValidName(""));    // False
+
+// A static method has no "this" object, so it CANNOT use instance members like Name.`,
+fKinds: String.raw`// CONCRETE (normal) class: complete, can be created with new
+public class Dog { public string Name = "Rex"; }
+
+// ABSTRACT class: an incomplete blueprint, must be inherited, cannot be new-ed
+public abstract class Animal { public abstract string Speak(); }
+public class Cat : Animal { public override string Speak() => "Meow"; }
+
+// SEALED class: complete and FINAL, nobody can inherit from it
+public sealed class Password { /* ... */ }
+// public class StrongPassword : Password { }   ❌ CS0509: cannot derive from sealed type
+
+// STATIC class: only static members, a toolbox, never an object
+public static class Converter
+{
+    public static double CToF(double c) => c * 9 / 5 + 32;
+}
+// Converter.CToF(100) → 212        new Converter() ❌ CS0712
+
+// INTERFACE: not a class, a contract of what a class can do
+public interface IPrintable { void Print(); }
+
+// PARTIAL class: one class split across several files (C# joins them)
+public partial class Report { public string Title = "Q4"; }
+public partial class Report { public void Print() { /* ... */ } }`,
 classObj: String.raw`public class Student            // the blueprint
 {
     public string Name;
@@ -855,9 +1195,9 @@ let store = {quiz:{}, lab:{}, test:0, drafts:{}};
 try{ const s = JSON.parse(localStorage.getItem('oop-tutorial-v1')); if(s) store = Object.assign(store, s); }catch(e){}
 function save(){ try{ localStorage.setItem('oop-tutorial-v1', JSON.stringify(store)); }catch(e){} updateProgress(); }
 function updateProgress(){
-  const pillars=['encapsulation','inheritance','polymorphism','abstraction'];
+  const pillars=['foundations','encapsulation','inheritance','polymorphism','abstraction'];
   let pts = pillars.filter(p=>store.quiz[p]).length + Object.values(store.lab).filter(Boolean).length + (store.test>=14?2:store.test>=10?1:0);
-  const max = 4 + 6 + 2;
+  const max = 5 + 6 + 2;
   const pct = Math.round(pts/max*100);
   document.getElementById('progText').textContent = pct + '%';
   document.getElementById('progBar').style.width = pct + '%';
@@ -875,7 +1215,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ===================================================================
 //  Routing
 // ===================================================================
-const VIEWS=['start','encapsulation','inheritance','polymorphism','abstraction','lab','challenges','test','cheatsheet'];
+const VIEWS=['start','foundations','encapsulation','inheritance','polymorphism','abstraction','lab','challenges','test','cheatsheet'];
 function show(){
   let v = location.hash.slice(1); if(!VIEWS.includes(v)) v='start';
   document.querySelectorAll('.view').forEach(el=>el.hidden = el.id!=='v-'+v);
@@ -889,6 +1229,26 @@ window.addEventListener('hashchange', show);
 //  Quizzes
 // ===================================================================
 const QUIZ = {
+foundations:[
+ {q:'What is the main purpose of a constructor?',
+  o:['To destroy an object when it is no longer needed','To initialise a new object into a valid starting state when it is created with <code>new</code>','To return a value from the class','To make a class abstract'],a:1,
+  e:'The constructor runs once, automatically, on <code>new</code>. It sets starting values and can reject invalid input, so every object starts in a usable state.'},
+ {q:'What happens here?', code:'public class Song\n{\n    public string Title { get; }\n    public Song(string title) { Title = title; }\n}\n\nSong s = new Song();',
+  o:['s.Title is null','s.Title is ""','Compile error: there is no constructor that takes 0 arguments','Runtime crash'],a:2,
+  e:'C# only gives you a free empty constructor when you write <b>no</b> constructors at all. Once <code>Song(string title)</code> exists, <code>new Song()</code> is a compile error (CS7036).'},
+ {q:'What does this print?', code:'Book a = new Book("Dune", "Herbert");\nBook b = a;\nb.Borrow();\nb.Borrow();\nConsole.WriteLine(a.TimesBorrowed);',
+  o:['0','1','2','Compile error'],a:2,
+  e:'<code>Book b = a;</code> copies the <b>reference</b>, so a and b point to the <b>same</b> object. Both Borrow() calls change that one object, giving 2.'},
+ {q:'<code>Student.Count</code> is <code>static</code>. Which statement is TRUE?',
+  o:['Each student object has its own Count','There is one Count shared by the whole class, accessed as <code>Student.Count</code>','Count can only be used inside the constructor','static means the value can never change'],a:1,
+  e:'static = belongs to the class. All objects share one copy. (Use <code>const</code> or <code>readonly</code> if something must never change.)'},
+ {q:'You are writing a <code>TaxCalculator</code> with only helper methods such as <code>CalculateGst(amount)</code>. It has no data of its own and you never need an object. Best choice?',
+  o:['abstract class','sealed class','static class','interface'],a:2,
+  e:'A pure toolbox with no per-object data is a <b>static</b> class, like <code>Math</code>. Call it as <code>TaxCalculator.CalculateGst(100)</code>.'},
+ {q:'Which kind of class can be created with <code>new</code> but can NOT be inherited from?',
+  o:['abstract','sealed','static','interface'],a:1,
+  e:'<b>sealed</b> = complete and final. Abstract is the opposite (can\'t new it, must inherit), and static allows neither.'}
+],
 encapsulation:[
  {q:'Which change makes this class properly encapsulated?', code:'public class Temperature\n{\n    public double Celsius;\n}',
   o:['Make <code>Celsius</code> static','Make the field <code>private</code> and add a property whose setter rejects values below -273.15','Rename it to <code>_celsius</code> but keep it public','Add a comment saying "don\'t set below -273.15"'],a:1,
@@ -948,7 +1308,7 @@ function renderQuiz(key){
         if(done) return;
         if(oi===q.a){ b.classList.add('right'); done=true; ex.hidden=false; ex.className='explain good'; ex.innerHTML='✅ '+q.e; solved++;
           opts.querySelectorAll('.opt').forEach(x=>x.disabled=true);
-          if(solved===qs.length){ store.quiz[key]=true; save(); status.innerHTML='<div class="done-banner">🎉 Quick check complete. This pillar is ticked off!</div>'; }
+          if(solved===qs.length){ store.quiz[key]=true; save(); status.innerHTML='<div class="done-banner">🎉 Quick check complete. This section is ticked off!</div>'; }
         } else { b.classList.add('wrong'); b.disabled=true; ex.hidden=false; ex.className='explain'; ex.innerHTML='Not quite. Think again, the hint is in the code.'; }
       };
       opts.appendChild(b);
@@ -973,6 +1333,85 @@ document.getElementById('objMake').onclick=()=>{
   document.getElementById('objAge').value=15+objCount%4;
 };
 document.getElementById('objClear').onclick=()=>{objCount=0;document.getElementById('objBox').innerHTML='';};
+
+// ===================================================================
+//  Foundations demos
+// ===================================================================
+(function(){
+  document.querySelectorAll('.jump').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}));
+
+  // --- references ---
+  let vars={}, objs=[], nextId=1;
+  const log=document.getElementById('refLog');
+  const w=h=>{log.insertAdjacentHTML('beforeend',h+'\n'); log.scrollTop=log.scrollHeight;};
+  const colors=['#2f7de1','#f2711c','#7c4dff'];
+  const draw=()=>{
+    const v=document.getElementById('refVars'), o=document.getElementById('refObjs');
+    v.innerHTML = Object.keys(vars).length ? Object.entries(vars).map(([k,id])=>{
+      const ob=objs.find(x=>x.id===id); const col=ob?colors[(ob.id-1)%3]:'#9aa0b8';
+      return `<div class="memvar"><code>${k}</code><span class="arrow" style="color:${col}">──▶</span><span class="tag" style="background:${col}">${id?'#'+id:'null'}</span></div>`;}).join('') : '<span style="color:var(--muted);font-size:14px">no variables yet</span>';
+    o.innerHTML = objs.length ? objs.map(ob=>{const col=colors[(ob.id-1)%3]; const refs=Object.entries(vars).filter(([,id])=>id===ob.id).map(([k])=>k);
+      return `<div class="memobj" style="border-color:${col}"><span class="tag" style="background:${col}">#${ob.id}</span> <b>Book</b><br>Title = "Dune"<br>TimesBorrowed = <b>${ob.borrowed}</b><br><span style="color:var(--muted);font-size:12px">${refs.length?'pointed to by: '+refs.join(', '):'nothing points here → garbage collector will remove it'}</span></div>`;}).join('') : '<span style="color:var(--muted);font-size:14px">empty</span>';
+  };
+  const act={
+    newA:()=>{ const id=nextId++; objs.push({id,borrowed:0}); vars.a=id; w(`<span class="ok">Book a = new Book("Dune");</span>  <span class="dim">// object #${id} created, a points to it</span>`); },
+    bIsA:()=>{ if(!('a' in vars)) return w('<span class="err">CS0103: The name \'a\' does not exist in the current context (create a first)</span>'); vars.b=vars.a; w(`<span class="ok">Book b = a;</span>  <span class="dim">// copies the ARROW, not the object: b → #${vars.a}</span>`); },
+    newC:()=>{ const id=nextId++; objs.push({id,borrowed:0}); vars.c=id; w(`<span class="ok">Book c = new Book("Dune");</span>  <span class="dim">// a NEW, separate object #${id}</span>`); },
+    bBorrow:()=>{ if(!('b' in vars)) return w('<span class="err">CS0103: The name \'b\' does not exist (run Book b = a; first)</span>'); const ob=objs.find(x=>x.id===vars.b); if(!ob) return w('<span class="err">💥 NullReferenceException</span>'); ob.borrowed++; w(`<span class="ok">b.Borrow();</span>  <span class="dim">// changes object #${ob.id}${vars.a===ob.id?', so a sees it too!':''}</span>`); },
+    cNull:()=>{ if(!('c' in vars)) return w('<span class="err">CS0103: The name \'c\' does not exist (create c first)</span>'); vars.c=null; w('<span class="ok">c = null;</span>  <span class="dim">// c points to nothing. c.Borrow() would now crash with a NullReferenceException</span>'); },
+    reset:()=>{ vars={}; objs=[]; nextId=1; log.innerHTML=''; }
+  };
+  document.querySelectorAll('[data-ref]').forEach(b=>b.onclick=()=>{ act[b.dataset.ref](); draw();
+    if(vars.a&&vars.b&&['bIsA','newC'].includes(b.dataset.ref)) { const eqB=vars.a===vars.b, eqC=('c' in vars)?vars.a===vars.c:null; w(`<span class="dim">a == b → ${eqB}${eqC===null?'':'   a == c → '+eqC}</span>`); } });
+  draw();
+
+  // --- constructor playground ---
+  let count=0, made=0;
+  const pick=document.getElementById('ctorPick'), tr=document.getElementById('ctorTrace');
+  const upd=()=>{ const v=pick.value; document.getElementById('ctorName').style.display = v==='0'?'none':''; document.getElementById('ctorLevel').style.display = v==='2'?'':'none'; };
+  pick.onchange=upd; upd();
+  document.getElementById('ctorGo').onclick=()=>{
+    const v=pick.value, name=document.getElementById('cName').value, lvlIn=document.getElementById('cLevel').value;
+    let lines=[];
+    if(v==='0'){ tr.innerHTML=`<span class="dim">new Player();</span>\n<span class="warn">⛔ Compile error CS7036: There is no argument given that corresponds to the required parameter 'name' of 'Player.Player(string)'</span>\n<span class="dim">// Player has constructors, so C# does NOT add a free empty one.\n// The program never even runs.</span>`; return; }
+    const level = v==='1' ? 1 : Number(lvlIn);
+    if(v==='1'){ lines.push(`<span class="dim">new Player("${esc(name)}")</span>`, `→ constructor ② runs <b>: this(name, 1)</b>`, `→ hands over to constructor ① with level = 1`); }
+    else lines.push(`<span class="dim">new Player("${esc(name)}", ${esc(String(lvlIn))})</span>`, `→ constructor ① runs`);
+    lines.push(`→ check: name not empty? ${name.trim()?'<span class="ok">✔</span>':'<span class="err">✘</span>'}`);
+    if(!name.trim()){ lines.push(`<span class="err">💥 throw new ArgumentException("Name is required")</span>`,`<span class="dim">// no object is created; Count stays ${count}</span>`); tr.innerHTML=lines.join('\n'); return; }
+    lines.push(`→ check: level >= 1? ${level>=1?'<span class="ok">✔</span>':'<span class="err">✘</span>'}`);
+    if(!(level>=1)){ lines.push(`<span class="err">💥 throw new ArgumentException("Level must be at least 1")</span>`,`<span class="dim">// no object is created; Count stays ${count}</span>`); tr.innerHTML=lines.join('\n'); return; }
+    count++; made++;
+    lines.push(`→ Name = "${esc(name)}", Level = ${level}, Health = ${level}×100 = ${level*100}`, `→ Count++  (now ${count})`, `<span class="ok">✅ object ready to use</span>`);
+    tr.innerHTML=lines.join('\n');
+    document.getElementById('ctorCount').textContent=count;
+    document.getElementById('ctorObjs').insertAdjacentHTML('beforeend',`<div class="obj"><b>p${made}</b> : Player<br>Name = "${esc(name)}"<br>Level = ${level}<br>Health = ${level*100}</div>`);
+  };
+
+  // --- kind sorter ---
+  const kinds=['Concrete','abstract','sealed','static','interface'];
+  const items=[
+    ['<b>Car</b>: the app creates thousands of cars with <code>new Car(...)</code>.','Concrete','A complete, real thing you create many of is a normal concrete class.'],
+    ['<b>Vehicle</b>: every real vehicle is a Car, Bus or Lorry. A plain "Vehicle" should never exist, but all share Plate and Fee().','abstract','A general idea that only exists as specific kinds, with shared code, is an abstract class.'],
+    ['<b>TemperatureConverter</b>: only helper methods like <code>CToF()</code>, with no data per object.','static','A toolbox with no per-object data is a static class, used as <code>TemperatureConverter.CToF(30)</code>.'],
+    ['<b>SecureToken</b>: a security class. Nobody should be able to subclass it and change its behaviour.','sealed','Finished and must not be extended means sealed.'],
+    ['<b>Saveable</b>: Documents, Photos and GameSettings are unrelated, but all must have <code>Save()</code>.','interface','A shared ability across unrelated classes is an interface: <code>ISaveable</code>.'],
+    ['<b>Shape</b>: Circle and Square each calculate Area() differently, but all share Describe().','abstract','Shared code plus "each child must fill this in" is an abstract class with an abstract method.']
+  ];
+  const box=document.getElementById('kindSorter'); let right=0;
+  box.innerHTML='<h4 style="margin-top:0">Interactive: which kind of class fits?</h4>';
+  items.forEach(([txt,ans,why])=>{
+    const d=document.createElement('div'); d.className='sorter-item'; d.style.flexDirection='column'; d.style.alignItems='stretch';
+    d.innerHTML=`<div>${txt}</div><div class="row">${kinds.map(k=>`<button class="btn small" data-k="${k}">${k}</button>`).join('')}</div><div class="why" style="font-size:14px"></div>`;
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      if(d.classList.contains('ok')) return;
+      if(b.dataset.k===ans){ d.classList.remove('no'); d.classList.add('ok'); d.querySelector('.why').innerHTML='✅ '+why; d.querySelectorAll('button').forEach(x=>x.disabled=true); right++;
+        if(right===items.length) box.insertAdjacentHTML('beforeend','<div class="done-banner">🎉 All 6 correct. You can choose the right kind of class.</div>'); }
+      else { d.classList.add('no'); b.disabled=true; d.querySelector('.why').textContent='Not quite. Ask: can it be created? Should it be inherited? Does it hold data?'; }
+    });
+    box.appendChild(d);
+  });
+})();
 
 // ===================================================================
 //  Encapsulation demo

@@ -2,7 +2,8 @@
 //  OOP PRACTICE — start here
 //
 //    dotnet run            → menu
-//    dotnet run -- demo    → run the lesson examples
+//    dotnet run -- basics  → OOP foundations (classes, objects, constructors)
+//    dotnet run -- demo    → run the 4-pillar lesson examples
 //    dotnet run -- 1       → check Exercise 1 (1 to 6)
 //    dotnet run -- all     → check every exercise
 // ============================================================
@@ -20,7 +21,8 @@ if (choice == "")
     ╔══════════════════════════════════════════╗
     ║        OOP PRACTICE  (C#)                ║
     ╠══════════════════════════════════════════╣
-    ║  demo  Run the lesson examples           ║
+    ║  basics  Classes, objects, constructors  ║
+    ║  demo    The 4 pillars lesson examples   ║
     ║  1     Encapsulation   – Student         ║
     ║  2     Inheritance     – Vehicles        ║
     ║  3     Polymorphism    – Payroll         ║
@@ -34,7 +36,11 @@ if (choice == "")
     choice = (Console.ReadLine() ?? "").Trim().ToLower();
 }
 
-if (choice == "demo")
+if (choice == "basics")
+{
+    OOPPractice.Lessons.Foundations.FoundationsDemo.Run();
+}
+else if (choice == "demo")
 {
     LessonDemo.Run();
 }
@@ -52,5 +58,5 @@ else if (int.TryParse(choice, out int n) && n >= 1 && n <= 6)
 }
 else
 {
-    Console.WriteLine("Unknown choice. Try: demo, 1-6, or all");
+    Console.WriteLine("Unknown choice. Try: basics, demo, 1-6, or all");
 }

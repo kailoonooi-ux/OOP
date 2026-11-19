@@ -23,7 +23,8 @@ Two parts work together:
 
 | Command | What it does |
 |---|---|
-| `dotnet run -- demo` | Runs the lesson examples. Read `Lessons/LessonExamples.cs` first and **predict** the output. |
+| `dotnet run -- basics` | OOP foundations: classes, objects, references, constructors, `static` and kinds of classes (`Lessons/Foundations.cs`). **Start here.** |
+| `dotnet run -- demo` | Runs the 4-pillar lesson examples. Read `Lessons/LessonExamples.cs` first and **predict** the output. |
 | `dotnet run -- 1` | Checks Exercise 1. Use any number from 1 to 6. |
 | `dotnet run -- all` | Checks every exercise. |
 
