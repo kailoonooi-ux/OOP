@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OOP in C# — The 4 Pillars, Interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1b1f3b; --muted:#5d6385; --line:#e3e5f0; --bg:#f7f7fb; --card:#fff;
+  --enc:#0f9d8a; --inh:#7c4dff; --pol:#f2711c; --abs:#2f7de1;
+  --good:#1e9e5a; --bad:#d64545; --warn:#b7791f;
+  --code-bg:#1e2235; --code-ink:#e6e8f2;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+code,pre,textarea,.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+a{color:var(--abs)}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;padding:10px 20px 4px;max-width:1100px;margin:0 auto}
+.brand h1{font-size:17px;margin:0;font-weight:800;letter-spacing:-.01em}
+.brand .pie{display:flex;gap:3px}
+.brand .pie span{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+.progress{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap}
+.bar{width:120px;height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--enc),var(--inh),var(--pol),var(--abs));width:0;transition:width .4s}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding:6px 16px 8px;max-width:1100px;margin:0 auto;scrollbar-width:none}
+nav.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid transparent}
+nav.tabs a:hover{background:#eef0f8}
+nav.tabs a.active{background:var(--ink);color:#fff}
+nav.tabs a .tick{color:var(--good);margin-left:4px}
+nav.tabs a.active .tick{color:#7ff0b4}
+main{max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+.view[hidden]{display:none}
+h2{font-size:30px;line-height:1.2;margin:4px 0 6px;letter-spacing:-.02em}
+h3{font-size:20px;margin:28px 0 8px}
+h4{margin:16px 0 6px;font-size:16px}
+.lead{font-size:18px;color:var(--muted);max-width:760px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:16px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:820px){.grid2,.grid4{grid-template-columns:1fr}.progress .bar{width:60px}h2{font-size:24px}}
+.oneline{border-left:5px solid var(--c,var(--ink));background:#fff;padding:14px 18px;border-radius:0 var(--r) var(--r) 0;font-size:18px;font-weight:600;margin:16px 0}
+.analogy{display:flex;gap:14px;align-items:flex-start;background:#fffbea;border:1px solid #f3e3a1;border-radius:var(--r);padding:14px 18px}
+.analogy .em{font-size:28px;line-height:1}
+.pillar-card{border-radius:var(--r);padding:18px;color:#fff;cursor:pointer;transition:transform .15s;text-decoration:none;display:block}
+.pillar-card:hover{transform:translateY(-3px)}
+.pillar-card > b{font-size:34px;display:block;line-height:1}
+.pillar-card h4{color:#fff;font-size:18px;margin:6px 0 2px}
+.pillar-card p{margin:0;font-size:14px;opacity:.92}
+pre.code{background:var(--code-bg);color:var(--code-ink);padding:16px 18px;border-radius:12px;overflow-x:auto;font-size:13.5px;line-height:1.55;margin:12px 0;position:relative}
+pre.code .k{color:#c792ea}pre.code .t{color:#82d2ff}pre.code .s{color:#c3e88d}pre.code .c{color:#7f87a8;font-style:italic}pre.code .n{color:#f78c6c}
+pre.code .hl{background:rgba(255,214,102,.16);display:inline-block;width:100%;margin:0 -18px;padding:0 18px}
+code.i{background:#eceef7;padding:1px 6px;border-radius:5px;font-size:.9em}
+.btn{font:inherit;font-weight:700;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .12s}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.primary:hover{background:#30365f}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=number],input[type=text],select{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;min-width:0}
+input[type=number]{width:110px}
+.console{background:#0d1020;color:#d3f9d8;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:10px;padding:12px 14px;min-height:90px;max-height:260px;overflow-y:auto;white-space:pre-wrap}
+.console .err{color:#ff8a8a}.console .ok{color:#8affc1}.console .dim{color:#7f87a8}.console .warn{color:#ffd166}
+.compile-err{background:#fff0f0;border:1px solid #f5c2c2;color:#9b1c1c;border-radius:10px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:10px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#eef0f8;color:var(--muted)}
+.tip,.mistake,.exam{border-radius:var(--r);padding:14px 18px;margin:14px 0}
+.tip{background:#eefaf5;border:1px solid #c4ecd8}
+.mistake{background:#fff3f0;border:1px solid #f8cfc4}
+.exam{background:#f1efff;border:1px solid #d8d0ff}
+.tip h4,.mistake h4,.exam h4{margin-top:0}
+.mistake ul,.tip ul,.exam ul{margin:6px 0 0;padding-left:20px}
+/* quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;background:#fff}
+.q .qt{font-weight:700;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font:inherit;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fafbff;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.right{border-color:var(--good);background:#e9f8f0}
+.opt.wrong{border-color:var(--bad);background:#fdeeee;text-decoration:line-through;opacity:.8}
+.opt.chosen{border-color:var(--ink);background:#eef0fa}
+.opt code{font-size:.92em}
+.explain{margin-top:10px;padding:10px 14px;border-radius:10px;background:#f4f6fb;font-size:15px}
+.explain.good{background:#e9f8f0}
+.quiz-status{font-weight:700;margin-top:6px}
+/* inheritance */
+.tree{display:flex;flex-direction:column;align-items:center;gap:10px}
+.tree .lvl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cls{font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;border:2px solid var(--inh);background:#fff;color:var(--inh);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px}
+.cls.sel{background:var(--inh);color:#fff}
+.members li{list-style:none;padding:6px 10px;border-radius:8px;margin:4px 0;font-family:'JetBrains Mono',monospace;font-size:13px}
+.members{padding:0;margin:0}
+.members .own{background:#efe9ff;border-left:4px solid var(--inh)}
+.members .inh{background:#f4f5fa;border-left:4px solid #c3c7da;color:var(--muted)}
+.members .rep{background:#fff5e8;border-left:4px solid var(--pol);color:#8a5a12}
+.sorter-item{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;background:#fff;flex-wrap:wrap}
+.sorter-item.ok{border-color:var(--good);background:#f0fbf5}
+.sorter-item.no{border-color:var(--bad);background:#fdf1f1}
+/* polymorphism */
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:8px;border:1.5px dashed var(--line);border-radius:10px;background:#fcfcff}
+.chip{padding:4px 10px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff;cursor:pointer}
+.chip:hover{opacity:.8;text-decoration:line-through}
+.switch{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-weight:600}
+.switch input{width:42px;height:24px;appearance:none;background:#cfd3e4;border-radius:99px;position:relative;cursor:pointer;transition:.2s;flex:none}
+.switch input::after{content:"";position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s}
+.switch input:checked{background:var(--pol)}
+.switch input:checked::after{left:21px}
+/* lab */
+.lab-list{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.lab-list button{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.lab-list button.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+textarea.editor{width:100%;min-height:420px;background:var(--code-bg);color:var(--code-ink);border:none;border-radius:12px;padding:16px;font-size:13.5px;line-height:1.55;resize:vertical;tab-size:4;outline:none}
+textarea.editor:focus{box-shadow:0 0 0 3px rgba(124,77,255,.35)}
+.checks li{list-style:none;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.checks{padding:0;margin:0}
+.checks .h{color:var(--warn);font-size:13px;margin-left:24px;display:block}
+.task-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:15px}
+.task-box ol,.task-box ul{padding-left:20px;margin:6px 0}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0;background:#fff}
+details summary{cursor:pointer;font-weight:700}
+/* test */
+.score-big{font-size:42px;font-weight:800}
+table{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f1f2f8;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.steps{counter-reset:s;padding:0;margin:0}
+.steps li{list-style:none;counter-increment:s;padding:10px 0 10px 44px;position:relative;border-bottom:1px dashed var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.objbox{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.obj{border:2px solid var(--abs);border-radius:12px;padding:8px 12px;background:#f2f7ff;font-family:'JetBrains Mono',monospace;font-size:13px;animation:pop .3s}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.done-banner{background:#e9f8f0;border:1px solid #bfe8d1;border-radius:12px;padding:10px 14px;font-weight:700;color:#176b41;margin-top:12px}
+.next-row{display:flex;justify-content:space-between;margin-top:30px;gap:10px;flex-wrap:wrap}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;opacity:0;transition:.3s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="pie"><span style="background:var(--abs)">A</span><span style="background:var(--pol)">P</span><span style="background:var(--inh)">I</span><span style="background:var(--enc)">E</span></div>
+    <h1>OOP in C# — the 4 Pillars</h1>
+    <div class="progress"><span id="progText">0%</span><div class="bar"><i id="progBar"></i></div></div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <a href="#start" data-v="start">🏠 Start</a>
+    <a href="#encapsulation" data-v="encapsulation">🔒 Encapsulation</a>
+    <a href="#inheritance" data-v="inheritance">🧬 Inheritance</a>
+    <a href="#polymorphism" data-v="polymorphism">🎭 Polymorphism</a>
+    <a href="#abstraction" data-v="abstraction">🎛️ Abstraction</a>
+    <a href="#lab" data-v="lab">💻 Code Lab</a>
+    <a href="#challenges" data-v="challenges">🧩 Exam Problems</a>
+    <a href="#test" data-v="test">📝 Mock Test</a>
+    <a href="#cheatsheet" data-v="cheatsheet">📋 Cheat Sheet</a>
+  </nav>
+</header>
+
+<main>
+<!-- ============================ START ============================ -->
+<section class="view" id="v-start">
+  <div class="kicker" style="color:var(--inh)">Welcome</div>
+  <h2>Understand OOP well enough to use it on <em>any</em> test question</h2>
+  <p class="lead">Memorising definitions isn't enough. In a practical test you'll get a new problem, such as a library, a car park or a payroll, and you'll have to decide <b>which classes to write and which pillar fits where</b>. This tutorial trains exactly that skill.</p>
+
+  <h3>The 4 pillars — remember them as <span style="letter-spacing:.1em">A·P·I·E</span></h3>
+  <div class="grid4">
+    <a class="pillar-card" href="#abstraction" style="background:var(--abs)"><b>A</b><h4>Abstraction</h4><p>Show <b>what</b> it does, hide <b>how</b>.</p></a>
+    <a class="pillar-card" href="#polymorphism" style="background:var(--pol)"><b>P</b><h4>Polymorphism</h4><p>One call, many behaviours.</p></a>
+    <a class="pillar-card" href="#inheritance" style="background:var(--inh)"><b>I</b><h4>Inheritance</h4><p>A child class <b>is a</b> kind of parent and reuses its code.</p></a>
+    <a class="pillar-card" href="#encapsulation" style="background:var(--enc)"><b>E</b><h4>Encapsulation</h4><p>Lock up the data. Only allow safe changes.</p></a>
+  </div>
+  <p style="color:var(--muted);font-size:14px">We'll learn them in the order <b>E → I → P → A</b>, because each one builds on the one before.</p>
+
+  <h3>Quick refresher: class vs object</h3>
+  <div class="grid2">
+    <div>
+      <div class="analogy"><div class="em">📐</div><div>A <b>class</b> is a <b>blueprint</b>, like the architect's plan for an HDB flat. An <b>object</b> is one actual flat built from that plan. One plan can produce many flats, and each flat has its own furniture (its own <b>data</b>).</div></div>
+      <pre class="code" data-code="classObj"></pre>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h4 style="margin-top:0">Try it: build objects from the Student blueprint</h4>
+      <div class="row">
+        <code class="i">new Student(</code><input type="text" id="objName" value="Mei" style="width:110px"><code class="i">,</code><input type="number" id="objAge" value="17" style="width:70px"><code class="i">)</code>
+        <button class="btn primary small" id="objMake">Create object</button>
+        <button class="btn small" id="objClear">Clear</button>
+      </div>
+      <div class="objbox" id="objBox"></div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:0">Notice that there's <b>one class</b> and <b>many objects</b>, and each object keeps its own Name and Age. Everything in OOP builds on this idea.</p>
+    </div>
+  </div>
+
+  <h3>How to use this tutorial</h3>
+  <ol class="steps">
+    <li><b>Read each pillar tab</b>, play with the interactive demo, and finish the quick check. A ✓ appears in the menu when you get them all right.</li>
+    <li><b>Code Lab</b>: write real C# for 6 exercises. The page gives instant feedback, and the practice project on your Mac runs real tests.</li>
+    <li><b>Exam Problems</b>: new scenarios like the ones in a practical test. Plan the design first, then code it.</li>
+    <li><b>Mock Test</b>: 16 mixed questions, including tricky "what's the output?" ones. Aim for 14/16 or better.</li>
+    <li>Keep the <b>Cheat Sheet</b> open while you practise.</li>
+  </ol>
+  <div class="next-row"><span></span><a class="btn primary" href="#encapsulation">Start with Encapsulation →</a></div>
+</section>
+
+<!-- ============================ ENCAPSULATION ============================ -->
+<section class="view" id="v-encapsulation" hidden>
+  <div class="kicker" style="color:var(--enc)">Pillar 1 of 4 · E</div>
+  <h2>🔒 Encapsulation</h2>
+  <div class="oneline" style="--c:var(--enc)">Keep an object's data <code class="i">private</code>. Let the outside world change it only through methods and properties that <b>check the rules</b>.</div>
+  <div class="analogy"><div class="em">🏧</div><div><b>Think of an ATM.</b> You can't open the machine and grab the cash, because the money is <i>private</i>. You can only press buttons such as <i>Withdraw</i> and <i>Deposit</i>, and the machine checks your PIN and balance before it does anything. The buttons are the <b>public methods</b>. The cash box is the <b>private field</b>.</div></div>
+
+  <h3>Why it matters: see the problem yourself</h3>
+  <div class="grid2">
+    <div class="card">
+      <span class="pill" style="background:#fdeeee;color:var(--bad)">❌ Without encapsulation</span>
+      <pre class="code" data-code="encBad"></pre>
+      <div class="row"><code class="i">acc.Balance =</code><input type="number" id="badVal" value="-9999"><button class="btn small" id="badSet">Run</button></div>
+      <p style="margin:10px 0 0;font-size:15px">Balance: <b id="badBal" class="mono">100</b></p>
+      <div id="badMsg" style="font-size:14px;color:var(--bad);min-height:22px"></div>
+    </div>
+    <div class="card">
+      <span class="pill" style="background:#e9f8f0;color:var(--good)">✅ With encapsulation</span>
+      <pre class="code" data-code="encGoodShort"></pre>
+      <div class="row"><input type="number" id="goodVal" value="50">
+        <button class="btn small" id="goodDep">acc.Deposit()</button>
+        <button class="btn small" id="goodWd">acc.Withdraw()</button></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn small" id="hackProp">Try: acc.Balance = 1000000;</button>
+        <button class="btn small" id="hackField">Try: acc._balance = 1000000;</button></div>
+      <p style="margin:10px 0 0;font-size:15px">Balance: <b id="goodBal" class="mono">100</b></p>
+      <div class="console" id="goodLog" style="min-height:60px;margin-top:6px"></div>
+    </div>
+  </div>
+
+  <h3>The full code</h3>
+  <pre class="code" data-code="encFull"></pre>
+
+  <h4>Three ways to write properties (you'll see all of them in tests)</h4>
+  <pre class="code" data-code="encProps"></pre>
+
+  <div class="exam"><h4>📝 How to explain it in a test answer</h4>
+  "Encapsulation means bundling data and the methods that act on it inside a class, and hiding the data using <code class="i">private</code>. Access goes through public properties and methods that enforce rules. <b>For example</b>, <code class="i">_balance</code> is private and <code class="i">Withdraw()</code> rejects amounts greater than the balance. <b>Benefit:</b> the object can never be in an invalid state, and the internal details can change without breaking other code."</div>
+
+  <div class="mistake"><h4>⚠️ Common mistakes</h4><ul>
+    <li>Making fields <code class="i">public</code> "to make it easier". That defeats the purpose.</li>
+    <li>Writing a setter with no checks: <code class="i">set { _score = value; }</code> is technically encapsulated but protects nothing. If the question gives a rule, put it in the setter.</li>
+    <li>Getting edge cases wrong: "between 0 and 100" usually <b>includes</b> 0 and 100, so use <code class="i">&gt;=</code> and <code class="i">&lt;=</code>.</li>
+    <li>Writing <code class="i">Score = value;</code> <i>inside</i> the Score setter. That calls itself forever and crashes with a StackOverflow. Store into the <b>field</b> instead: <code class="i">_score = value;</code></li>
+  </ul></div>
+
+  <div class="tip"><h4>🔍 How to spot it in a question</h4>Look for words like <b>"must not be negative"</b>, <b>"cannot be changed after creation"</b>, <b>"only between…"</b>, <b>"read-only"</b> or <b>"validate"</b>. Each one is an encapsulation rule, so it needs a private field and a checked property or method.</div>
+
+  <h3>Quick check</h3>
+  <div id="quiz-encapsulation"></div>
+  <div class="next-row"><a class="btn" href="#start">← Start</a><a class="btn primary" href="#inheritance">Next: Inheritance →</a></div>
+</section>
+
+<!-- ============================ INHERITANCE ============================ -->
+<section class="view" id="v-inheritance" hidden>
+  <div class="kicker" style="color:var(--inh)">Pillar 2 of 4 · I</div>
+  <h2>🧬 Inheritance</h2>
+  <div class="oneline" style="--c:var(--inh)">A child class <b>is a</b> more specific kind of its parent class. It gets all the parent's members for free, then adds its own.</div>
+  <div class="analogy"><div class="em">🎮</div><div><b>Think of a role-playing game.</b> Every character has a Name and Health and can take damage. A <i>Warrior</i> <b>is a</b> Character with extra Strength. A <i>Mage</i> <b>is a</b> Character with extra Mana. Instead of copying Name/Health/TakeDamage into every class, you write them <b>once</b> in <code class="i">Character</code> and let the children inherit them.</div></div>
+
+  <h3>The code</h3>
+  <pre class="code" data-code="inhCode"></pre>
+
+  <div class="grid2">
+    <div class="tip" style="margin:0"><h4>Key syntax</h4><ul>
+      <li><code class="i">class Warrior : Character</code> means Warrior inherits from Character.</li>
+      <li><code class="i">: base(name, 150)</code> runs the <b>parent's constructor first</b>.</li>
+      <li><code class="i">protected</code> means the member is visible to the class <b>and its children</b>, but not to outsiders.</li>
+      <li>C# allows only <b>one</b> parent class: <code class="i">class A : B, C</code> is not allowed if B and C are both classes.</li>
+    </ul></div>
+    <div class="tip" style="margin:0;background:#f3f0ff;border-color:#dcd2ff"><h4>Access modifiers</h4>
+      <table><tr><th></th><th>Same class</th><th>Child class</th><th>Outside</th></tr>
+      <tr><td><code class="i">public</code></td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td><code class="i">protected</code></td><td>✅</td><td>✅</td><td>❌</td></tr>
+      <tr><td><code class="i">private</code></td><td>✅</td><td>❌</td><td>❌</td></tr></table>
+    </div>
+  </div>
+
+  <h3>Interactive: explore the class family</h3>
+  <div class="card">
+    <p style="margin-top:0">Click a class to see what it <b>owns</b>, what it <b>inherits</b> and what it <b>replaces</b>.</p>
+    <div class="grid2">
+      <div>
+        <div class="tree">
+          <div class="lvl"><button class="cls" data-cls="Character">Character</button></div>
+          <div style="color:var(--muted)">▲ inherits from ▲</div>
+          <div class="lvl"><button class="cls" data-cls="Warrior">Warrior</button><button class="cls" data-cls="Mage">Mage</button><button class="cls" data-cls="Cleric">Cleric</button></div>
+        </div>
+        <div id="ctorChain" style="margin-top:16px"></div>
+      </div>
+      <div>
+        <h4 id="clsTitle" style="margin-top:0">Pick a class →</h4>
+        <ul class="members" id="clsMembers"></ul>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px"><span class="pill" style="background:#efe9ff;color:var(--inh)">own</span> <span class="pill">inherited</span> <span class="pill" style="background:#fff5e8;color:#8a5a12">inherited, but replaced (override)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Interactive: "is-a" or "has-a"?</h3>
+  <p>This is the most important design decision. Only use inheritance when the child <b>is a</b> kind of parent. If one thing <b>has a</b> part, make that part a <b>field</b> instead (this is called <i>composition</i>).</p>
+  <div class="card" id="sorter"></div>
+
+  <div class="exam"><h4>📝 How to explain it in a test answer</h4>
+  "Inheritance lets a class (the subclass) acquire the fields and methods of another class (the base class), forming an <b>is-a</b> relationship. <b>For example</b>, <code class="i">class Warrior : Character</code> means Warrior inherits Name, Health and TakeDamage, then adds Strength. <b>Benefit:</b> code reuse, since common code is written once and a change in the base class applies to every subclass."</div>
+
+  <div class="mistake"><h4>⚠️ Common mistakes</h4><ul>
+    <li>Forgetting <code class="i">: base(...)</code> when the parent constructor needs arguments. This gives compile error <b>CS7036</b>: "There is no argument given that corresponds to the required parameter…"</li>
+    <li>Copying the parent's properties into the child "just to be safe". This creates duplicate or hidden members, which is exactly what inheritance is meant to avoid.</li>
+    <li>Using inheritance for "has-a": <code class="i">class Car : Engine</code> ❌. A Car <i>has</i> an Engine, so use <code class="i">private Engine _engine;</code></li>
+    <li>Trying to use a parent's <code class="i">private</code> field in the child. Children can't see private members, so make it <code class="i">protected</code> or use a property.</li>
+  </ul></div>
+
+  <h3>Quick check</h3>
+  <div id="quiz-inheritance"></div>
+  <div class="next-row"><a class="btn" href="#encapsulation">← Encapsulation</a><a class="btn primary" href="#polymorphism">Next: Polymorphism →</a></div>
+</section>
+
+<!-- ============================ POLYMORPHISM ============================ -->
+<section class="view" id="v-polymorphism" hidden>
+  <div class="kicker" style="color:var(--pol)">Pillar 3 of 4 · P</div>
+  <h2>🎭 Polymorphism</h2>
+  <div class="oneline" style="--c:var(--pol)">"Many forms": you make the <b>same call</b> on different objects, and each one responds <b>in its own way</b>.</div>
+  <div class="analogy"><div class="em">📣</div><div><b>A teacher says "Everyone, attack!"</b> to the whole party. The teacher doesn't need to know who is who. The Warrior swings a sword, the Mage casts a fireball and the Cleric smites. It's <b>one instruction with many behaviours</b>. In code: <code class="i">foreach (Character c in party) c.Attack();</code></div></div>
+
+  <h3>The code: <code class="i">virtual</code> + <code class="i">override</code></h3>
+  <pre class="code" data-code="polCode"></pre>
+
+  <h3>Interactive: build a party and run the loop</h3>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <p style="margin-top:0"><b>1. Add characters to</b> <code class="i">List&lt;Character&gt; party</code> <span style="font-size:13px;color:var(--muted)">(click a chip to remove it)</span></p>
+        <div class="row">
+          <button class="btn small" data-add="Warrior">+ Warrior</button>
+          <button class="btn small" data-add="Mage">+ Mage</button>
+          <button class="btn small" data-add="Cleric">+ Cleric</button>
+          <button class="btn small" data-add="Character">+ Character</button>
+        </div>
+        <div class="chips" id="party" style="margin-top:10px"></div>
+        <p><b>2. Run the same line for everyone:</b></p>
+        <pre class="code" data-code="polLoop"></pre>
+        <div class="row"><button class="btn primary" id="runParty">▶ Run loop</button><button class="btn" id="resetParty">Reset mana</button></div>
+        <label class="switch" style="margin-top:14px"><input type="checkbox" id="breakPoly"> Experiment: remove <code class="i">virtual</code> / <code class="i">override</code></label>
+        <p id="breakNote" style="font-size:14px;color:var(--muted)"></p>
+      </div>
+      <div>
+        <p style="margin-top:0"><b>Output</b></p>
+        <div class="console" id="partyOut" style="min-height:300px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tip"><h4>💡 What just happened?</h4>The variable type is <code class="i">Character</code>, but the <b>object</b> is a Warrior, Mage or Cleric. With <code class="i">virtual</code>/<code class="i">override</code>, C# checks the <b>real object at runtime</b> and runs that version. That's why the loop never needs <code class="i">if (c is Warrior) … else if (c is Mage) …</code>. Adding a new character type, such as Archer, needs <b>zero changes</b> to the loop.<br><br>Also, run it 4+ times with a Mage. When its mana runs out, it calls <code class="i">base.Attack()</code>, which reuses the parent's version from inside the override.</div>
+
+  <h3>Two kinds of polymorphism</h3>
+  <div class="grid2">
+    <div class="card" style="margin:0"><h4 style="margin-top:0">Runtime (overriding) ⭐ the main one</h4>
+      <p style="font-size:15px;margin:0">Same method signature in parent and child. The parent marks it <code class="i">virtual</code> (or <code class="i">abstract</code>) and the child uses <code class="i">override</code>. The version is chosen <b>while the program runs</b>, based on the real object.</p></div>
+    <div class="card" style="margin:0"><h4 style="margin-top:0">Compile-time (overloading)</h4>
+      <p style="font-size:15px;margin:0 0 6px">Same method <b>name</b> with <b>different parameters</b> in the same class. The compiler picks one based on the arguments you pass.</p>
+      <pre class="code" data-code="polOverload" style="margin:0"></pre></div>
+  </div>
+
+  <h3>⚠️ The trap examiners love: <code class="i">new</code> vs <code class="i">override</code></h3>
+  <pre class="code" data-code="polTrap"></pre>
+  <div id="trapQ"></div>
+
+  <div class="exam"><h4>📝 How to explain it in a test answer</h4>
+  "Polymorphism means objects of different classes can be treated through a common base type, and the same method call produces behaviour specific to each object's actual class. In C# this is done with <code class="i">virtual</code> methods in the base class and <code class="i">override</code> in the subclasses. <b>For example</b>, calling <code class="i">c.Attack()</code> on each item of a <code class="i">List&lt;Character&gt;</code> runs the Warrior's or Mage's version. <b>Benefit:</b> new subclasses can be added without changing the code that uses them."</div>
+
+  <div class="mistake"><h4>⚠️ Common mistakes</h4><ul>
+    <li>Forgetting <code class="i">virtual</code> in the parent. Then <code class="i">override</code> gives error <b>CS0506</b>: "cannot override inherited member because it is not marked virtual, abstract, or override".</li>
+    <li>Changing the signature: <code class="i">override decimal CalculatePay(int bonus)</code> doesn't match the parent's <code class="i">CalculatePay()</code>, so it's a different method.</li>
+    <li>Writing <code class="i">if (e is Manager) … else if (e is Intern) …</code> in the loop. It works, but it's <b>not</b> polymorphism, and in a test it shows you didn't use the concept.</li>
+  </ul></div>
+
+  <h3>Quick check</h3>
+  <div id="quiz-polymorphism"></div>
+  <div class="next-row"><a class="btn" href="#inheritance">← Inheritance</a><a class="btn primary" href="#abstraction">Next: Abstraction →</a></div>
+</section>
+
+<!-- ============================ ABSTRACTION ============================ -->
+<section class="view" id="v-abstraction" hidden>
+  <div class="kicker" style="color:var(--abs)">Pillar 4 of 4 · A</div>
+  <h2>🎛️ Abstraction</h2>
+  <div class="oneline" style="--c:var(--abs)">Show <b>what</b> an object can do and hide <b>how</b> it does it. Define a contract with <code class="i">abstract</code> classes or <code class="i">interface</code>s.</div>
+  <div class="analogy"><div class="em">🚗</div><div><b>Driving a car:</b> you only need the steering wheel, accelerator and brake. You don't need to know how fuel injection works. The pedals are the <b>abstraction</b>, a simple "what". The engine is the hidden "how". You can drive a petrol car or an electric car with the <b>same pedals</b>, because both follow the same contract.</div></div>
+
+  <div class="tip"><h4>Encapsulation vs Abstraction — the classic confusion</h4>
+  <b>Encapsulation</b> is about <i>protecting data</i>: <code class="i">private</code> fields plus validated access. It's the "how it's kept safe".<br>
+  <b>Abstraction</b> is about <i>hiding complexity behind a simple contract</i>: <code class="i">abstract</code>/<code class="i">interface</code>. It's the "what you can ask it to do".<br>
+  They work together, but if a test asks you to "show abstraction", it wants an <code class="i">abstract class</code> or an <code class="i">interface</code>.</div>
+
+  <h3>Tool 1: abstract class</h3>
+  <pre class="code" data-code="absClass"></pre>
+
+  <h3>Tool 2: interface</h3>
+  <pre class="code" data-code="absIface"></pre>
+
+  <h3>Interactive: the shape factory and the compiler</h3>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <p style="margin-top:0"><b>Make a shape</b></p>
+        <div class="row"><select id="shapeType"><option>Circle</option><option>Rectangle</option></select>
+          <span id="shapeInputs"></span>
+          <button class="btn primary small" id="shapeMake">Create &amp; Describe()</button></div>
+        <p style="margin-bottom:4px"><b>Try code the compiler will reject</b></p>
+        <div class="row">
+          <button class="btn small" id="errNewShape">Shape s = new Shape();</button>
+          <button class="btn small" id="errTriangle">class Triangle : Shape { } // no Area()</button>
+          <button class="btn small" id="errIface">INotifier n = new INotifier();</button>
+        </div>
+        <div id="shapeErr"></div>
+      </div>
+      <div><div class="console" id="shapeOut" style="min-height:200px"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <p style="margin-top:0"><b>Swap the "how" without touching the "what"</b>. <code class="i">AlertService</code> only knows <code class="i">INotifier</code>.</p>
+    <div class="row">
+      <code class="i">new AlertService(new</code>
+      <select id="notifType"><option>EmailNotifier</option><option>SmsNotifier</option></select><code class="i">())</code>
+      <code class="i">.Alert(</code><input type="text" id="notifMsg" value="Server is on fire right now" style="width:240px"><code class="i">)</code>
+      <button class="btn primary small" id="notifSend">Run</button>
+    </div>
+    <div class="console" id="notifOut" style="min-height:50px;margin-top:10px"></div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:0">SMS cuts messages to 20 characters. AlertService's code never changed, only the object you plugged in. That's abstraction and polymorphism working together.</p>
+  </div>
+
+  <h3>abstract class vs interface</h3>
+  <table>
+    <tr><th></th><th>abstract class</th><th>interface</th></tr>
+    <tr><td>Can create with <code class="i">new</code>?</td><td>❌ No</td><td>❌ No</td></tr>
+    <tr><td>Fields &amp; constructors</td><td>✅ Yes</td><td>❌ No fields or constructors</td></tr>
+    <tr><td>Normal (finished) methods</td><td>✅ Yes, so it can share code</td><td>Usually just signatures (contract only)</td></tr>
+    <tr><td>How many can a class use?</td><td><b>One</b> parent class</td><td><b>Many</b> interfaces</td></tr>
+    <tr><td>Keyword in child</td><td><code class="i">override</code></td><td>just write the <code class="i">public</code> method</td></tr>
+    <tr><td>Relationship</td><td>"<b>is a</b>" (Circle is a Shape)</td><td>"<b>can do</b>" (Cleric can heal)</td></tr>
+    <tr><td>Use when…</td><td>children share data/code <b>and</b> must fill in some parts</td><td>unrelated classes need the same ability</td></tr>
+  </table>
+  <p style="font-size:14px;color:var(--muted)">Naming convention: interfaces start with <b>I</b>, such as <code class="i">IShape</code>, <code class="i">IHealable</code> and <code class="i">INotifier</code>. (Newer C# versions allow default method bodies in interfaces, but tests rarely need them.)</p>
+
+  <div class="exam"><h4>📝 How to explain it in a test answer</h4>
+  "Abstraction means exposing only the essential features of an object while hiding its implementation details. In C# this is done with <code class="i">abstract</code> classes and <code class="i">interface</code>s, which define <i>what</i> must be done, while subclasses decide <i>how</i>. <b>For example</b>, <code class="i">Shape</code> declares <code class="i">abstract double Area()</code>, and Circle and Rectangle each implement it. <b>Benefit:</b> code that uses a Shape works with any shape without knowing the formula, and it cannot create an incomplete Shape."</div>
+
+  <div class="mistake"><h4>⚠️ Common mistakes</h4><ul>
+    <li>Giving an abstract method a body: <code class="i">public abstract double Area() { }</code> ❌. End it with a semicolon instead.</li>
+    <li>Declaring an abstract method in a class that isn't marked <code class="i">abstract</code>. This gives error <b>CS0513</b>.</li>
+    <li>Forgetting <code class="i">public</code> when implementing an interface method. This gives error <b>CS0737</b>.</li>
+    <li>Forgetting <code class="i">override</code> when implementing an abstract method. This gives error <b>CS0534</b>: "does not implement inherited abstract member".</li>
+  </ul></div>
+
+  <h3>Quick check</h3>
+  <div id="quiz-abstraction"></div>
+  <div class="next-row"><a class="btn" href="#polymorphism">← Polymorphism</a><a class="btn primary" href="#lab">Next: Code Lab →</a></div>
+</section>
+
+<!-- ============================ CODE LAB ============================ -->
+<section class="view" id="v-lab" hidden>
+  <div class="kicker" style="color:var(--ink)">Practise</div>
+  <h2>💻 Code Lab</h2>
+  <p class="lead">Write the C# yourself. <b>Check</b> reads your code's structure and gives quick feedback. For the real test, run the same exercise in the <b>OOPPractice</b> project on your Mac with <code class="i">dotnet run -- 1</code> (1 to 6), which compiles and runs your code.</p>
+  <div class="lab-list" id="labList"></div>
+  <div class="grid2" style="grid-template-columns:1.1fr 1fr">
+    <div>
+      <textarea class="editor" id="editor" spellcheck="false"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="labCheck">✔ Check my code</button>
+        <button class="btn" id="labHint">💡 Hint</button>
+        <button class="btn" id="labCopy">Copy code</button>
+        <button class="btn" id="labReset">Reset</button>
+      </div>
+    </div>
+    <div>
+      <div class="task-box" id="labTask"></div>
+      <div id="labHintBox"></div>
+      <div class="card" style="margin-top:12px"><h4 style="margin-top:0">Checker results</h4><ul class="checks" id="labResults"><li style="color:var(--muted)">Press "Check my code".</li></ul></div>
+      <details id="labAnswerBox"><summary>👀 Model answer (try first!)</summary><pre class="code" id="labAnswer"></pre></details>
+    </div>
+  </div>
+  <div class="tip"><h4>Don't have the project set up yet?</h4>Paste your class plus a small <code class="i">Main</code> into <a href="https://dotnetfiddle.net" target="_blank" rel="noopener">dotnetfiddle.net</a> to run it in a browser. On a test, always <b>test your own code</b> with a few <code class="i">Console.WriteLine</code> calls, including edge cases like 0, a negative number and the maximum value.</div>
+</section>
+
+<!-- ============================ EXAM PROBLEMS ============================ -->
+<section class="view" id="v-challenges" hidden>
+  <div class="kicker" style="color:var(--ink)">Transfer your skills</div>
+  <h2>🧩 Exam Problems: new scenarios</h2>
+  <p class="lead">Test questions won't be about Characters and Shapes. These problems use new topics so you practise <b>turning a story into classes</b>. Use the 5-step method first, then code.</p>
+  <div class="card">
+    <h4 style="margin-top:0">The 5-step method for ANY OOP problem</h4>
+    <ol class="steps">
+      <li><b>Nouns become classes.</b> Underline the things in the story: Car, Truck, CarPark.</li>
+      <li><b>"X is a kind of Y" means inheritance.</b> Find the shared parent: Car and Truck are both kinds of Vehicle.</li>
+      <li><b>"Each type does it differently" means polymorphism.</b> Use a <code class="i">virtual</code>/<code class="i">abstract</code> method in the parent and <code class="i">override</code> it in each child.</li>
+      <li><b>"Should never exist on its own" means abstraction.</b> Make the parent <code class="i">abstract</code>. If unrelated classes share an ability, use an <code class="i">interface</code>.</li>
+      <li><b>Rules ("must not", "only between", "cannot change") mean encapsulation.</b> Use a private field plus a checked property or method.</li>
+    </ol>
+  </div>
+  <div id="challengeList"></div>
+</section>
+
+<!-- ============================ MOCK TEST ============================ -->
+<section class="view" id="v-test" hidden>
+  <div class="kicker" style="color:var(--ink)">Test yourself</div>
+  <h2>📝 Mock Test</h2>
+  <p class="lead">16 mixed questions: identify the pillar, predict the output, find the error and pick the best design. Answer all of them, then submit. Explanations appear afterwards. <b>Target: 14/16.</b></p>
+  <div id="testBest" class="pill" style="margin-bottom:8px"></div>
+  <div id="testBox"></div>
+  <div class="row" style="margin-top:14px"><button class="btn primary" id="testSubmit">Submit answers</button><button class="btn" id="testRetake">Retake (shuffled)</button></div>
+  <div id="testResult"></div>
+</section>
+
+<!-- ============================ CHEAT SHEET ============================ -->
+<section class="view" id="v-cheatsheet" hidden>
+  <div class="kicker" style="color:var(--ink)">Keep this open</div>
+  <h2>📋 Cheat Sheet</h2>
+  <table>
+    <tr><th>Pillar</th><th>One-liner</th><th>C# keywords</th><th>Spot it when the question says…</th></tr>
+    <tr><td><b style="color:var(--enc)">Encapsulation</b></td><td>Hide data, allow safe access only</td><td><code class="i">private</code>, properties <code class="i">{ get; set; }</code>, validation in <code class="i">set</code></td><td>"must not be negative", "read-only", "only between…", "validate"</td></tr>
+    <tr><td><b style="color:var(--inh)">Inheritance</b></td><td>Child <b>is a</b> parent and reuses its code</td><td><code class="i">class B : A</code>, <code class="i">base(...)</code>, <code class="i">protected</code></td><td>"types of…", "kinds of…", "all X have…, but Y also has…"</td></tr>
+    <tr><td><b style="color:var(--pol)">Polymorphism</b></td><td>Same call, different behaviour</td><td><code class="i">virtual</code>, <code class="i">override</code>, <code class="i">base.Method()</code>, overloading</td><td>"each type calculates differently", "process a list of mixed items"</td></tr>
+    <tr><td><b style="color:var(--abs)">Abstraction</b></td><td>Show <b>what</b>, hide <b>how</b></td><td><code class="i">abstract class</code>, <code class="i">abstract</code> method, <code class="i">interface</code></td><td>"should never be created directly", "every X must be able to…", "contract"</td></tr>
+  </table>
+
+  <h3>Syntax you must be able to write from memory</h3>
+  <pre class="code" data-code="cheatAll"></pre>
+
+  <h3>Compiler errors you'll meet</h3>
+  <table>
+    <tr><th>Code</th><th>Message (short)</th><th>Usual fix</th></tr>
+    <tr><td>CS0122</td><td>'X' is inaccessible due to its protection level</td><td>It's private. Use the public property or method instead.</td></tr>
+    <tr><td>CS0200</td><td>Property cannot be assigned to — it is read only</td><td>There's no setter. Change it through a method, or it's meant to be fixed.</td></tr>
+    <tr><td>CS7036</td><td>No argument given for required parameter</td><td>Add <code class="i">: base(...)</code> to the child constructor.</td></tr>
+    <tr><td>CS0506</td><td>Cannot override — not marked virtual/abstract</td><td>Add <code class="i">virtual</code> to the parent method.</td></tr>
+    <tr><td>CS0534</td><td>Does not implement inherited abstract member</td><td>Add the missing <code class="i">override</code> method.</td></tr>
+    <tr><td>CS0535</td><td>Does not implement interface member</td><td>Add the missing method with <code class="i">public</code>.</td></tr>
+    <tr><td>CS0144</td><td>Cannot create an instance of the abstract type or interface</td><td><code class="i">new</code> a concrete child class instead.</td></tr>
+    <tr><td>CS0513</td><td>Abstract member in non-abstract class</td><td>Mark the class <code class="i">abstract</code>.</td></tr>
+    <tr><td>CS0114</td><td><i>Warning:</i> hides inherited member</td><td>You probably meant <code class="i">override</code>, not a new method.</td></tr>
+  </table>
+
+  <h3>Answer template for "Explain X with an example" (usually 3–4 marks)</h3>
+  <div class="exam"><ol style="margin:0;padding-left:20px">
+    <li><b>Define</b> it in one sentence.</li>
+    <li><b>Name the C# mechanism</b>, such as <code class="i">private</code> + property, <code class="i">: base</code>, <code class="i">virtual/override</code> or <code class="i">abstract/interface</code>.</li>
+    <li><b>Point to a specific example</b> in the code given: "in class Book, LateFee() overrides…"</li>
+    <li><b>State the benefit</b>: data integrity, code reuse, extensibility or reduced complexity.</li>
+  </ol></div>
+  <h3>Before you submit test code — checklist</h3>
+  <ul>
+    <li>☐ Every field is <code class="i">private</code> (or <code class="i">protected</code> if children need it).</li>
+    <li>☐ Every rule in the question is enforced in a setter or method, with edge cases checked.</li>
+    <li>☐ Child constructors call <code class="i">: base(...)</code>.</li>
+    <li>☐ Parent methods that children change are <code class="i">virtual</code> or <code class="i">abstract</code>, and children use <code class="i">override</code>.</li>
+    <li>☐ Loops over a <code class="i">List&lt;Parent&gt;</code> call the method directly, with no <code class="i">if (x is Child)</code> chains.</li>
+    <li>☐ <code class="i">decimal</code> literals end in <code class="i">m</code>: <code class="i">0.5m</code>.</li>
+    <li>☐ You tested it with a few <code class="i">Console.WriteLine</code> calls.</li>
+  </ul>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================================================================
+//  CODE SNIPPETS (all compiled & tested with .NET 8)
+// ===================================================================
+const CODE = {
+classObj: String.raw`public class Student            // the blueprint
+{
+    public string Name;
+    public int Age;
+
+    public Student(string name, int age)   // constructor
+    {
+        Name = name;
+        Age = age;
+    }
+}
+
+Student s1 = new Student("Mei", 17);   // object 1
+Student s2 = new Student("Ravi", 16);  // object 2 — its own data`,
+encBad: String.raw`public class BankAccount
+{
+    public decimal Balance;   // anyone can change it!
+}`,
+encGoodShort: String.raw`public class BankAccount
+{
+    private decimal _balance;            // hidden
+    public decimal Balance => _balance;  // read-only view
+    public void Deposit(decimal amount) { /* checks */ }
+    public bool Withdraw(decimal amount) { /* checks */ }
+}`,
+encFull: String.raw`public class BankAccount
+{
+    private decimal _balance;               // ① PRIVATE field: nobody outside can touch it
+
+    public string Owner { get; }            // ② get only: set once in constructor, then read-only
+    public decimal Balance => _balance;     // ③ others can READ the balance, never WRITE it
+
+    public BankAccount(string owner, decimal openingDeposit)
+    {
+        Owner = owner;
+        Deposit(openingDeposit);            //    even the constructor goes through the rules
+    }
+
+    public void Deposit(decimal amount)     // ④ the only way IN — with a check
+    {
+        if (amount <= 0)
+        {
+            Console.WriteLine("Rejected: deposit must be positive");
+            return;
+        }
+        _balance += amount;
+    }
+
+    public bool Withdraw(decimal amount)    // ⑤ the only way OUT — with a check
+    {
+        if (amount <= 0 || amount > _balance)
+        {
+            Console.WriteLine("Rejected: invalid amount");
+            return false;
+        }
+        _balance -= amount;
+        return true;
+    }
+}`,
+encProps: String.raw`// A) Full property with validation — use when there's a RULE
+private int _score;
+public int Score
+{
+    get { return _score; }
+    set
+    {
+        if (value >= 0 && value <= 100)   // "value" = what the caller is trying to set
+            _score = value;               // store in the FIELD (not Score = value!)
+    }
+}
+
+// B) Auto-property, read-only outside — use when there's no rule but it shouldn't change freely
+public string Name { get; private set; }  // class can change it, outsiders can't
+public string Id { get; }                 // can only be set in the constructor
+
+// C) Computed (expression-bodied) read-only property
+public bool Passed => Score >= 50;`,
+inhCode: String.raw`public class Character                         // PARENT (base class)
+{
+    public string Name { get; }
+    protected int Health;                       // protected: children can use it
+
+    public Character(string name, int health)
+    {
+        Name = name;
+        Health = health;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        Health = Math.Max(0, Health - amount);
+        Console.WriteLine($"{Name} has {Health} HP left");
+    }
+}
+
+public class Warrior : Character                // CHILD: "Warrior IS A Character"
+{
+    public int Strength { get; }                // only Warriors have this
+
+    public Warrior(string name) : base(name, 150)   // ← call parent constructor FIRST
+    {
+        Strength = 20;
+    }
+}
+
+// Using it:
+Warrior w = new Warrior("Ren");
+Console.WriteLine(w.Name);       // "Ren"   ← inherited from Character
+Console.WriteLine(w.Strength);   // 20      ← Warrior's own
+w.TakeDamage(40);                // "Ren has 110 HP left"  ← inherited method`,
+polCode: String.raw`public class Character
+{
+    // ... Name, Health, constructor as before ...
+
+    public virtual string Attack()              // virtual = "children MAY replace this"
+    {
+        return $"{Name} punches weakly.";
+    }
+}
+
+public class Warrior : Character
+{
+    public Warrior(string name) : base(name, 150) { }
+
+    public override string Attack()             // override = "I'm replacing it"
+    {
+        return $"{Name} swings a sword!";
+    }
+}
+
+public class Mage : Character
+{
+    public int Mana { get; private set; } = 100;
+    public Mage(string name) : base(name, 80) { }
+
+    public override string Attack()
+    {
+        if (Mana < 30) return $"{Name} is out of mana... " + base.Attack();  // reuse parent's
+        Mana -= 30;
+        return $"{Name} casts a fireball! (mana left: {Mana})";
+    }
+}`,
+polLoop: String.raw`foreach (Character c in party)
+{
+    Console.WriteLine(c.Attack());
+}`,
+polOverload: String.raw`public int    Add(int a, int b)        => a + b;
+public double Add(double a, double b)  => a + b;
+public int    Add(int a, int b, int c) => a + b + c;
+
+Add(2, 3);       // calls version 1
+Add(2.5, 1.0);   // calls version 2`,
+polTrap: String.raw`class Animal
+{
+    public virtual string Speak() => "...";
+    public string Move() => "moves";            // NOT virtual
+}
+class Dog : Animal
+{
+    public override string Speak() => "Woof";  // overrides
+    public new string Move() => "runs";         // "new" HIDES, does not override
+}
+
+Animal a = new Dog();
+Console.WriteLine(a.Speak());   // ?
+Console.WriteLine(a.Move());    // ?`,
+absClass: String.raw`public abstract class Shape                  // abstract: you can NEVER write new Shape()
+{
+    public abstract double Area();          // abstract method: NO body, ends with ;
+                                            // every child MUST override it
+
+    public string Describe()                // normal method: shared, written once
+    {
+        return $"{GetType().Name} with area {Area():F2}";
+    }
+}
+
+public class Circle : Shape
+{
+    private readonly double _radius;
+    public Circle(double radius) { _radius = radius; }
+
+    public override double Area() => Math.PI * _radius * _radius;
+}
+
+public class Rectangle : Shape
+{
+    private readonly double _w, _h;
+    public Rectangle(double w, double h) { _w = w; _h = h; }
+
+    public override double Area() => _w * _h;
+}
+
+// Using it — the caller doesn't know or care about the formulas:
+List<Shape> shapes = new List<Shape> { new Circle(1), new Rectangle(3, 4) };
+foreach (Shape s in shapes)
+    Console.WriteLine(s.Describe());   // Circle with area 3.14 / Rectangle with area 12.00`,
+absIface: String.raw`public interface INotifier                  // a pure CONTRACT: "can send a message"
+{
+    string Send(string message);            // no body, no "public" needed here
+}
+
+public class EmailNotifier : INotifier
+{
+    public string Send(string message) => "Email: " + message;
+}
+
+public class SmsNotifier : INotifier
+{
+    public string Send(string message)
+    {
+        if (message.Length > 20) message = message.Substring(0, 20);
+        return "SMS: " + message;
+    }
+}
+
+public class AlertService
+{
+    private readonly INotifier _notifier;   // depends on the CONTRACT, not a specific class
+
+    public AlertService(INotifier notifier) { _notifier = notifier; }
+
+    public string Alert(string message) => _notifier.Send("ALERT " + message);
+}
+
+// A class can inherit ONE class but implement MANY interfaces:
+public class Cleric : Character, IHealable, IComparable<Cleric> { ... }`,
+cheatAll: String.raw`// ENCAPSULATION
+private int _age;
+public int Age
+{
+    get => _age;
+    set { if (value >= 0) _age = value; }
+}
+public string Id { get; }                       // read-only after constructor
+
+// INHERITANCE
+public class Dog : Animal
+{
+    public Dog(string name) : base(name) { }    // call parent constructor
+}
+
+// POLYMORPHISM
+public virtual  string Speak() => "...";        // in parent
+public override string Speak() => "Woof";       // in child
+foreach (Animal a in animals) Console.WriteLine(a.Speak());
+
+// ABSTRACTION
+public abstract class Animal { public abstract string Speak(); }
+public interface IPet { string Owner { get; } void Play(); }
+public class Dog : Animal, IPet { ... }          // 1 class + many interfaces`
+};
+
+// ===================================================================
+//  Tiny C# syntax highlighter
+// ===================================================================
+const KW = 'public|private|protected|internal|class|interface|abstract|virtual|override|sealed|static|readonly|new|return|if|else|foreach|for|while|in|base|this|get|set|value|void|int|double|decimal|string|bool|var|true|false|null|using|namespace|throw|is|out|const';
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function highlight(src){
+  const re = new RegExp(String.raw`(\/\/[^\n]*)|(\$?"(?:[^"\\\n]|\\.)*")|\b(${KW})\b|\b(\d+(?:\.\d+)?m?)\b|\b([A-Z][A-Za-z0-9_]*)\b`, 'g');
+  let out='', last=0, m;
+  while((m=re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    const t = esc(m[0]);
+    if(m[1]) out+=`<span class="c">${t}</span>`;
+    else if(m[2]) out+=`<span class="s">${t}</span>`;
+    else if(m[3]) out+=`<span class="k">${t}</span>`;
+    else if(m[4]) out+=`<span class="n">${t}</span>`;
+    else out+=`<span class="t">${t}</span>`;
+    last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+function renderCode(el, src){ el.innerHTML = highlight(src); }
+document.querySelectorAll('pre[data-code]').forEach(el=>renderCode(el, CODE[el.dataset.code]));
+
+// ===================================================================
+//  Progress store (localStorage is optional)
+// ===================================================================
+let store = {quiz:{}, lab:{}, test:0, drafts:{}};
+try{ const s = JSON.parse(localStorage.getItem('oop-tutorial-v1')); if(s) store = Object.assign(store, s); }catch(e){}
+function save(){ try{ localStorage.setItem('oop-tutorial-v1', JSON.stringify(store)); }catch(e){} updateProgress(); }
+function updateProgress(){
+  const pillars=['encapsulation','inheritance','polymorphism','abstraction'];
+  let pts = pillars.filter(p=>store.quiz[p]).length + Object.values(store.lab).filter(Boolean).length + (store.test>=14?2:store.test>=10?1:0);
+  const max = 4 + 6 + 2;
+  const pct = Math.round(pts/max*100);
+  document.getElementById('progText').textContent = pct + '%';
+  document.getElementById('progBar').style.width = pct + '%';
+  document.querySelectorAll('#tabs a').forEach(a=>{
+    const v=a.dataset.v; let done=false;
+    if(pillars.includes(v)) done=!!store.quiz[v];
+    if(v==='lab') done=[1,2,3,4,5,6].every(i=>store.lab[i]);
+    if(v==='test') done=store.test>=14;
+    a.querySelector('.tick')?.remove();
+    if(done) a.insertAdjacentHTML('beforeend','<span class="tick">✓</span>');
+  });
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ===================================================================
+//  Routing
+// ===================================================================
+const VIEWS=['start','encapsulation','inheritance','polymorphism','abstraction','lab','challenges','test','cheatsheet'];
+function show(){
+  let v = location.hash.slice(1); if(!VIEWS.includes(v)) v='start';
+  document.querySelectorAll('.view').forEach(el=>el.hidden = el.id!=='v-'+v);
+  document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('active', a.dataset.v===v));
+  document.querySelector(`#tabs a[data-v="${v}"]`)?.scrollIntoView({inline:'center',block:'nearest'});
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', show);
+
+// ===================================================================
+//  Quizzes
+// ===================================================================
+const QUIZ = {
+encapsulation:[
+ {q:'Which change makes this class properly encapsulated?', code:'public class Temperature\n{\n    public double Celsius;\n}',
+  o:['Make <code>Celsius</code> static','Make the field <code>private</code> and add a property whose setter rejects values below -273.15','Rename it to <code>_celsius</code> but keep it public','Add a comment saying "don\'t set below -273.15"'],a:1,
+  e:'Encapsulation = <b>private data</b> + <b>controlled access that enforces the rule</b>. A name or comment doesn\'t stop anyone.'},
+ {q:'What happens with this code?', code:'BankAccount acc = new BankAccount("Aisha", 100);\nacc.Balance = 5000;   // Balance is declared as: public decimal Balance => _balance;',
+  o:['Balance becomes 5000','Balance stays 100, silently','Compile error: Balance is read-only (no setter)','Runtime crash'],a:2,
+  e:'<code>=&gt;</code> creates a get-only property. Assigning to it is a <b>compile error (CS0200)</b>, so the program never runs. That is encapsulation doing its job.'},
+ {q:'The rule says "age must be between 0 and 120 inclusive". Which setter is correct?',
+  o:['<code>set { if (value > 0 && value < 120) _age = value; }</code>','<code>set { if (value >= 0 && value <= 120) _age = value; }</code>','<code>set { if (value >= 0 || value <= 120) _age = value; }</code>','<code>set { if (value >= 0 && value <= 120) Age = value; }</code>'],a:1,
+  e:'"Inclusive" means 0 and 120 are allowed, so use <code>&gt;=</code> and <code>&lt;=</code> with <b>&&</b> (|| would accept everything). Option D assigns to <code>Age</code> inside Age\'s own setter, which calls itself forever (StackOverflow).'}
+],
+inheritance:[
+ {q:'Which is a correct use of inheritance?',
+  o:['<code>class Car : Engine</code>','<code>class Library : Book</code>','<code>class SavingsAccount : BankAccount</code>','<code>class Student : Classroom</code>'],a:2,
+  e:'Ask "is a?" A savings account <b>is a</b> bank account ✅. A car <i>has</i> an engine, a library <i>has</i> books and a classroom <i>has</i> students. Those are fields (composition), not inheritance.'},
+ {q:'This code doesn\'t compile. Why?', code:'public class Animal\n{\n    public string Name { get; }\n    public Animal(string name) { Name = name; }\n}\npublic class Cat : Animal\n{\n    public Cat(string name) { }\n}',
+  o:['Cat must redeclare Name','Cat\'s constructor must call the parent\'s: <code>public Cat(string name) : base(name) { }</code>','Classes can\'t have constructors with parameters','Animal must be abstract'],a:1,
+  e:'Animal has no empty constructor, so Cat <b>must</b> say how to build its Animal part with <code>: base(name)</code>. Otherwise you get CS7036.'},
+ {q:'Character has <code>private int _health;</code>. Can Warrior (a child) write <code>_health = 200;</code>?',
+  o:['Yes, children inherit everything and can access it all','No, private members are only accessible inside Character. Use <code>protected</code> or a property.','Only inside the constructor','Only if Warrior is also private'],a:1,
+  e:'The field still <i>exists</i> inside a Warrior object, but <code>private</code> means only Character\'s own code can touch it. <code>protected</code> opens it to children.'}
+],
+polymorphism:[
+ {q:'What does this print?', code:'Character c = new Mage("Yuki");   // Mage overrides Attack()\nConsole.WriteLine(c.Attack());',
+  o:['"Yuki punches weakly." because the variable type is Character','"Yuki casts a fireball!..." because the real object is a Mage','Compile error','Nothing'],a:1,
+  e:'With <code>virtual</code>/<code>override</code>, the <b>object\'s actual type</b> decides which method runs, not the variable\'s type. That\'s runtime polymorphism.'},
+ {q:'Which loop shows polymorphism best?',
+  o:['<code>foreach (Employee e in staff) { if (e is Manager) total += e.BaseSalary + 1000; else total += e.BaseSalary; }</code>','<code>foreach (Employee e in staff) total += e.CalculatePay();</code>','<code>total = staff.Count * 3000;</code>','<code>foreach (Manager m in staff) total += m.CalculatePay();</code>'],a:1,
+  e:'Each subclass overrides <code>CalculatePay()</code>, and the loop just calls it. The type-checking version works but has to be edited every time a new type is added, which is exactly what polymorphism avoids.'},
+ {q:'Two methods <code>Print(int x)</code> and <code>Print(string s)</code> in the same class are an example of…',
+  o:['Overriding','Overloading (compile-time polymorphism)','Inheritance','Encapsulation'],a:1,
+  e:'Same name with different parameters in the same class is <b>overloading</b>. The compiler picks a version from the argument types. <b>Overriding</b> is a child replacing a parent\'s virtual method.'}
+],
+abstraction:[
+ {q:'What\'s wrong here?', code:'public class Shape\n{\n    public abstract double Area();\n}',
+  o:['Nothing','An abstract method needs a body','A class with an abstract method must itself be marked <code>abstract</code>','Area must return int'],a:2,
+  e:'If any member is abstract (unfinished), the class is unfinished too, so it must be <code>public abstract class Shape</code>. Otherwise you get CS0513.'},
+ {q:'Ducks, planes and drones are unrelated classes, but all can fly. Best design?',
+  o:['Make them all inherit from <code>class Duck</code>','An <code>interface IFlyable { void Fly(); }</code> that each class implements','Copy a Fly() method into each class with no shared type','One giant class with an if-statement per type'],a:1,
+  e:'They share an <b>ability</b>, not an identity, so the relationship is "can do", which means an <b>interface</b>. Each class keeps its own parent class (Bird, Aircraft…) and adds IFlyable.'},
+ {q:'Which statement is TRUE?',
+  o:['You can create an object with <code>new</code> from an abstract class','A class can inherit from many classes but only one interface','An abstract class can contain fields, constructors and normal methods, as well as abstract methods','Interface methods must be marked <code>override</code> in the class'],a:2,
+  e:'Abstract classes can mix finished and unfinished parts. The reverse of B is true (one class, many interfaces). Interface methods are implemented as normal <code>public</code> methods, without <code>override</code>.'}
+]};
+
+function renderQuiz(key){
+  const box=document.getElementById('quiz-'+key); const qs=QUIZ[key]; let solved=0;
+  box.innerHTML='';
+  qs.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='q';
+    d.innerHTML=`<div class="qt">${qi+1}. ${q.q}</div>${q.code?'<pre class="code"></pre>':''}<div class="opts"></div><div class="explain" hidden></div>`;
+    if(q.code) renderCode(d.querySelector('pre'), q.code);
+    const opts=d.querySelector('.opts'), ex=d.querySelector('.explain'); let done=false;
+    q.o.forEach((o,oi)=>{
+      const b=document.createElement('button'); b.className='opt'; b.innerHTML=o;
+      b.onclick=()=>{
+        if(done) return;
+        if(oi===q.a){ b.classList.add('right'); done=true; ex.hidden=false; ex.className='explain good'; ex.innerHTML='✅ '+q.e; solved++;
+          opts.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+          if(solved===qs.length){ store.quiz[key]=true; save(); status.innerHTML='<div class="done-banner">🎉 Quick check complete. This pillar is ticked off!</div>'; }
+        } else { b.classList.add('wrong'); b.disabled=true; ex.hidden=false; ex.className='explain'; ex.innerHTML='Not quite. Think again, the hint is in the code.'; }
+      };
+      opts.appendChild(b);
+    });
+    box.appendChild(d);
+  });
+  const status=document.createElement('div'); box.appendChild(status);
+  if(store.quiz[key]) status.innerHTML='<div class="done-banner">✓ Already completed. Feel free to redo it.</div>';
+}
+Object.keys(QUIZ).forEach(renderQuiz);
+
+// ===================================================================
+//  Start: class/object demo
+// ===================================================================
+let objCount=0;
+document.getElementById('objMake').onclick=()=>{
+  const n=document.getElementById('objName').value.trim()||'Student', a=document.getElementById('objAge').value||0;
+  objCount++;
+  document.getElementById('objBox').insertAdjacentHTML('beforeend',`<div class="obj"><b>s${objCount}</b> : Student<br>Name = "${esc(n)}"<br>Age = ${esc(String(a))}</div>`);
+  const names=['Ravi','Aisha','Wei Ling','Hafiz','Priya','Jun'];
+  document.getElementById('objName').value=names[objCount%names.length];
+  document.getElementById('objAge').value=15+objCount%4;
+};
+document.getElementById('objClear').onclick=()=>{objCount=0;document.getElementById('objBox').innerHTML='';};
+
+// ===================================================================
+//  Encapsulation demo
+// ===================================================================
+(function(){
+  let bad=100, good=100; const log=document.getElementById('goodLog');
+  const w=(h)=>{log.insertAdjacentHTML('beforeend',h+'\n');log.scrollTop=log.scrollHeight;};
+  document.getElementById('badSet').onclick=()=>{
+    bad=Number(document.getElementById('badVal').value);
+    document.getElementById('badBal').textContent=bad;
+    document.getElementById('badMsg').textContent = bad<0 ? '😱 Negative balance and nothing stopped it. Any line of code anywhere could do this.' : (bad>100000?'😱 Free money! No deposit was ever made.':'It worked… but nothing checked whether it should.');
+  };
+  const amt=()=>Number(document.getElementById('goodVal').value);
+  document.getElementById('goodDep').onclick=()=>{const a=amt(); if(a<=0) w(`<span class="err">acc.Deposit(${a}) → Rejected: deposit must be positive</span>`); else {good+=a; w(`<span class="ok">acc.Deposit(${a}) → OK</span>`);} document.getElementById('goodBal').textContent=good;};
+  document.getElementById('goodWd').onclick=()=>{const a=amt(); if(a<=0||a>good) w(`<span class="err">acc.Withdraw(${a}) → Rejected: invalid amount (returns false)</span>`); else {good-=a; w(`<span class="ok">acc.Withdraw(${a}) → OK (returns true)</span>`);} document.getElementById('goodBal').textContent=good;};
+  document.getElementById('hackProp').onclick=()=>w(`<span class="warn">⛔ Compile error CS0200: Property or indexer 'BankAccount.Balance' cannot be assigned to -- it is read only</span>`);
+  document.getElementById('hackField').onclick=()=>w(`<span class="warn">⛔ Compile error CS0122: 'BankAccount._balance' is inaccessible due to its protection level</span>`);
+})();
+
+// ===================================================================
+//  Inheritance explorer + is-a sorter
+// ===================================================================
+(function(){
+  const C={
+    Character:{parent:null, own:['string Name { get; }','protected int Health','Character(string name, int health)','void TakeDamage(int amount)','virtual string Attack()'], ctor:'base: Health = given value'},
+    Warrior:{parent:'Character', own:['int Strength { get; }','Warrior(string name) : base(name, 150)','override string Attack()  → sword'], hp:150},
+    Mage:{parent:'Character', own:['int Mana { get; private set; }','Mage(string name) : base(name, 80)','override string Attack()  → fireball'], hp:80},
+    Cleric:{parent:'Character', own:['Cleric(string name) : base(name, 100)','override string Attack()  → holy light','void Heal(int amount)  (from interface IHealable)'], hp:100}
+  };
+  const show=(k)=>{
+    document.querySelectorAll('.cls').forEach(b=>b.classList.toggle('sel',b.dataset.cls===k));
+    const c=C[k]; document.getElementById('clsTitle').innerHTML=`<code class="i">${k}</code>${c.parent?' : <code class="i">'+c.parent+'</code>':''}`;
+    let html=c.own.map(m=>`<li class="own">${esc(m)}</li>`).join('');
+    if(c.parent){
+      C[c.parent].own.forEach(m=>{
+        if(m.startsWith('Character(')) return;          // constructors are NOT inherited
+        if(m.startsWith('virtual')) html+=`<li class="rep">${esc(m)}  ← replaced by override</li>`;
+        else html+=`<li class="inh">${esc(m)}  ← from Character</li>`;
+      });
+      html+=`<li class="inh" style="font-style:italic">(constructors are NOT inherited, so each child writes its own and calls base)</li>`;
+    }
+    document.getElementById('clsMembers').innerHTML=html;
+    document.getElementById('ctorChain').innerHTML = c.parent ? `<div class="console"><span class="dim">// new ${k}("Ren") runs in this order:</span>
+<span class="ok">1.</span> Character("Ren", ${c.hp})  → Name = "Ren", Health = ${c.hp}
+<span class="ok">2.</span> ${k}(...) body             → ${k==='Warrior'?'Strength = 20':k==='Mage'?'Mana = 100':'(nothing extra)'}
+<span class="dim">// parent first, then child: like building the foundation before the upper floor</span></div>` : `<div class="console"><span class="dim">// Character is the base class. Every child gets its members.</span></div>`;
+  };
+  document.querySelectorAll('.cls').forEach(b=>b.onclick=()=>show(b.dataset.cls));
+  show('Warrior');
+
+  const pairs=[['Car','Vehicle','is'],['Car','Engine','has'],['Student','Person','is'],['Library','Book','has'],['Square','Shape','is'],['Phone','Battery','has'],['Manager','Employee','is'],['Order','Customer','has']];
+  const box=document.getElementById('sorter'); let right=0;
+  box.innerHTML='<p style="margin-top:0">For each pair, decide: inheritance (<b>is-a</b>) or a field (<b>has-a</b>)?</p>';
+  pairs.forEach(([a,b,ans])=>{
+    const d=document.createElement('div'); d.className='sorter-item';
+    d.innerHTML=`<span><b>${a}</b> … <b>${b}</b></span><span class="row"><button class="btn small" data-x="is">${a} is a ${b}</button><button class="btn small" data-x="has">${a} has a ${b}</button></span>`;
+    d.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{
+      if(d.classList.contains('ok')) return;
+      if(btn.dataset.x===ans){ d.classList.remove('no'); d.classList.add('ok');
+        d.querySelector('span').innerHTML += ans==='is' ? ` → <code class="i">class ${a} : ${b}</code>` : ` → <code class="i">private ${b} _${b.toLowerCase()};</code> inside ${a}`;
+        d.querySelectorAll('button').forEach(x=>x.disabled=true); right++;
+        if(right===pairs.length) box.insertAdjacentHTML('beforeend','<div class="done-banner">🎉 All 8 correct. You can tell inheritance from composition.</div>');
+      } else d.classList.add('no');
+    });
+    box.appendChild(d);
+  });
+})();
+
+// ===================================================================
+//  Polymorphism party
+// ===================================================================
+(function(){
+  const colors={Warrior:'#c0392b',Mage:'#7c4dff',Cleric:'#d4a017',Character:'#7f8c8d'};
+  const names={Warrior:['Ren','Kai','Bao'],Mage:['Yuki','Iris','Zara'],Cleric:['Sol','Amir','Lena'],Character:['Villager','Farmer','Guard']};
+  let party=[], cnt={Warrior:0,Mage:0,Cleric:0,Character:0};
+  const out=document.getElementById('partyOut'), brk=document.getElementById('breakPoly');
+  const draw=()=>{const p=document.getElementById('party'); p.innerHTML=party.length?'':'<span style="color:var(--muted);font-size:13px">empty list…</span>';
+    party.forEach((m,i)=>{const s=document.createElement('span'); s.className='chip'; s.style.background=colors[m.type]; s.textContent=`${m.type} "${m.name}"`; s.title='click to remove'; s.onclick=()=>{party.splice(i,1);draw();}; p.appendChild(s);});};
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const t=b.dataset.add; const n=names[t][cnt[t]++%3]; party.push({type:t,name:n,mana:100}); draw();});
+  [['Warrior','Ren'],['Mage','Yuki'],['Cleric','Sol']].forEach(([t,n])=>{cnt[t]++;party.push({type:t,name:n,mana:100});});
+  draw();
+  const attack=(m)=>{
+    if(brk.checked || m.type==='Character') return `${m.name} punches weakly.`;
+    if(m.type==='Warrior') return `${m.name} swings a sword!`;
+    if(m.type==='Cleric') return `${m.name} smites with holy light!`;
+    if(m.mana<30) return `${m.name} is out of mana... ${m.name} punches weakly.`;
+    m.mana-=30; return `${m.name} casts a fireball! (mana left: ${m.mana})`;
+  };
+  let run=0;
+  document.getElementById('runParty').onclick=()=>{
+    run++; out.innerHTML+=`<span class="dim">// run ${run}${brk.checked?' (no virtual/override)':''}</span>\n`;
+    if(!party.length) out.innerHTML+='<span class="warn">(list is empty: the loop body never runs)</span>\n';
+    party.forEach((m,i)=>setTimeout(()=>{out.innerHTML+=`<span class="dim">[${m.type}]</span> ${esc(attack(m))}\n`; out.scrollTop=out.scrollHeight;}, i*180));
+  };
+  document.getElementById('resetParty').onclick=()=>{party.forEach(m=>m.mana=100); out.innerHTML+='<span class="dim">// mana reset to 100</span>\n';};
+  brk.onchange=()=>{document.getElementById('breakNote').innerHTML = brk.checked ? 'Now each child\'s Attack() is a <b>separate new method</b>, not an override. Through a <code class="i">Character</code> variable, C# can only see Character\'s version, <b>so everyone punches weakly</b>. Run it and see. (The compiler also warns CS0114: "hides inherited member".)' : '';};
+  // trap question
+  const tq=document.getElementById('trapQ');
+  tq.innerHTML='<div class="q"><div class="qt">What are the two lines of output?</div><div class="opts"></div><div class="explain" hidden></div></div>';
+  const opts=[['Woof / runs',false],['Woof / moves',true],['... / moves',false],['... / runs',false]];
+  const ob=tq.querySelector('.opts'), ex=tq.querySelector('.explain');
+  opts.forEach(([t,ok])=>{const b=document.createElement('button'); b.className='opt'; b.textContent=t; b.onclick=()=>{
+    if(ok){b.classList.add('right'); ob.querySelectorAll('.opt').forEach(x=>x.disabled=true); ex.hidden=false; ex.className='explain good';
+      ex.innerHTML='✅ <b>Speak()</b> is virtual and overridden, so the <i>object</i> (a Dog) decides: "Woof". <b>Move()</b> is not virtual, and Dog only <i>hides</i> it with <code>new</code>, so the <i>variable type</i> (Animal) decides: "moves". If you wrote <code>Dog d = new Dog(); d.Move();</code> you would get "runs". <b>Rule:</b> only virtual + override gives real polymorphism.';}
+    else {b.classList.add('wrong'); b.disabled=true; ex.hidden=false; ex.className='explain'; ex.textContent='Not quite. Which method is virtual, and which one is only hidden with "new"?';}
+  }; ob.appendChild(b);});
+})();
+
+// ===================================================================
+//  Abstraction demos
+// ===================================================================
+(function(){
+  const out=document.getElementById('shapeOut'), err=document.getElementById('shapeErr');
+  const inputs=()=>{document.getElementById('shapeInputs').innerHTML = document.getElementById('shapeType').value==='Circle'
+    ? 'radius <input type="number" id="sr" value="1" step="0.5" style="width:80px">'
+    : 'w <input type="number" id="sw" value="3" style="width:70px"> h <input type="number" id="sh" value="4" style="width:70px">';};
+  document.getElementById('shapeType').onchange=inputs; inputs();
+  document.getElementById('shapeMake').onclick=()=>{
+    err.innerHTML=''; const t=document.getElementById('shapeType').value; let area, code;
+    if(t==='Circle'){const r=+document.getElementById('sr').value; area=Math.PI*r*r; code=`Shape s = new Circle(${r});`;}
+    else {const w=+document.getElementById('sw').value,h=+document.getElementById('sh').value; area=w*h; code=`Shape s = new Rectangle(${w}, ${h});`;}
+    out.innerHTML+=`<span class="dim">${esc(code)}\nConsole.WriteLine(s.Describe());</span>\n<span class="ok">${t} with area ${area.toFixed(2)}</span>\n\n`; out.scrollTop=out.scrollHeight;
+  };
+  const showErr=(c)=>{err.innerHTML=`<div class="compile-err">⛔ ${c}</div>`;};
+  document.getElementById('errNewShape').onclick=()=>showErr("CS0144: Cannot create an instance of the abstract type or interface 'Shape'<br><br>💡 Shape is incomplete (no Area formula). Create a Circle or Rectangle instead.");
+  document.getElementById('errTriangle').onclick=()=>showErr("CS0534: 'Triangle' does not implement inherited abstract member 'Shape.Area()'<br><br>💡 Abstract = a promise. Every child MUST keep it by overriding Area().");
+  document.getElementById('errIface').onclick=()=>showErr("CS0144: Cannot create an instance of the abstract type or interface 'INotifier'<br><br>💡 An interface is only a contract. Use <code>INotifier n = new EmailNotifier();</code>");
+  document.getElementById('notifSend').onclick=()=>{
+    const t=document.getElementById('notifType').value; let m='ALERT '+document.getElementById('notifMsg').value;
+    const res = t==='EmailNotifier' ? 'Email: '+m : 'SMS: '+(m.length>20?m.substring(0,20):m);
+    document.getElementById('notifOut').innerHTML+=`<span class="dim">// AlertService → _notifier.Send(...) → ${t}.Send runs</span>\n<span class="ok">${esc(res)}</span>\n`;
+  };
+})();
+
+// ===================================================================
+//  CODE LAB
+// ===================================================================
+const strip = s => s.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,'');
+const has = (re) => (c) => re.test(c);
+const LAB = [
+{ id:1, title:'1 · Encapsulation', task:`<b>Student</b>
+<ol><li>Constructor <code class="i">Student(string name)</code></li>
+<li><code class="i">Name</code>: anyone can read it, but nobody outside can change it.</li>
+<li><code class="i">Score</code> (int), stored in a <b>private field</b>. Accept 0–100. Ignore anything else (keep the old value). It starts at 0.</li>
+<li><code class="i">Passed</code>: read-only bool, true when Score &gt;= 50.</li>
+<li>No public fields.</li></ol>`,
+ starter:`public class Student
+{
+    // TODO 1: private field for the score
+
+
+    // TODO 2: Name property (read-only from outside)
+
+
+    public Student(string name)
+    {
+        // TODO 3: store the name
+    }
+
+    // TODO 4: Score property with validation
+
+
+    // TODO 5: Passed property
+
+}`,
+ checks:[
+  ['Has a private int field', has(/private\s+int\s+\w+\s*(=\s*\d+\s*)?;/), 'e.g. private int _score;'],
+  ['Name is read-only from outside', has(/public\s+string\s+Name\s*\{\s*get\s*;\s*(private\s+set\s*;\s*)?\}/), 'public string Name { get; }'],
+  ['Constructor stores the name', has(/Student\s*\(\s*string\s+(\w+)\s*\)\s*\{[^}]*Name\s*=\s*\w+/), 'Inside the constructor: Name = name;'],
+  ['Score property has a setter', has(/public\s+int\s+Score\s*\{[\s\S]*?\bset\b/), 'public int Score { get { … } set { … } }'],
+  ['Setter checks the lower limit (0)', has(/value\s*>=\s*0\b|0\s*<=\s*value|value\s*<\s*0\b|value\s*>\s*-1\b/), 'Use value >= 0'],
+  ['Setter checks the upper limit (100)', has(/value\s*<=\s*100\b|100\s*>=\s*value|value\s*>\s*100\b|value\s*<\s*101\b/), 'Use value <= 100'],
+  ['Setter stores into the field (not Score = value)', c=>/set[\s\S]*?_?\w+\s*=\s*value/.test(c) && !/\bScore\s*=\s*value/.test(c), 'Assign to the private field. Score = value inside Score\'s setter loops forever!'],
+  ['Passed is a read-only bool using >= 50', has(/public\s+bool\s+Passed\s*(=>|\{\s*get)[\s\S]{0,60}>=\s*50/), 'public bool Passed => Score >= 50;'],
+  ['No public fields', c=>/private\s+int/.test(c) && !/public\s+(int|string|double|decimal|bool)\s+\w+\s*(=(?!>)[^;{]*)?;/.test(c), 'Fields should be private.']
+ ],
+ hints:['Start with the field: <code>private int _score;</code>. Score\'s getter returns it; the setter decides whether to change it.','Setter pattern:<br><code>set { if (value >= 0 && value <= 100) _score = value; }</code>','Read-only name: <code>public string Name { get; }</code> can still be assigned inside the constructor.'],
+ answer:`public class Student
+{
+    private int _score;
+
+    public string Name { get; }
+
+    public Student(string name)
+    {
+        Name = name;
+    }
+
+    public int Score
+    {
+        get { return _score; }
+        set
+        {
+            if (value >= 0 && value <= 100)
+            {
+                _score = value;
+            }
+        }
+    }
+
+    public bool Passed => Score >= 50;
+}`},
+{ id:2, title:'2 · Inheritance', task:`<b>Vehicles</b>
+<ol><li><code class="i">Vehicle(string brand, int wheels)</code> with read-only <code class="i">Brand</code>, <code class="i">Wheels</code>, and <code class="i">string Describe()</code> → <code class="i">"Toyota with 4 wheels"</code></li>
+<li><code class="i">Car : Vehicle</code>, constructor <code class="i">Car(string brand, int doors)</code> → always 4 wheels, plus a read-only <code class="i">Doors</code> property</li>
+<li><code class="i">Motorcycle : Vehicle</code>, constructor <code class="i">Motorcycle(string brand)</code> → 2 wheels</li></ol>Don't copy Brand, Wheels or Describe into the children. Inherit them!`,
+ starter:`public class Vehicle
+{
+
+}
+
+// Car here
+
+// Motorcycle here
+`,
+ checks:[
+  ['Vehicle has read-only Brand and Wheels', has(/public\s+string\s+Brand\s*\{\s*get\s*;[\s\S]*public\s+int\s+Wheels\s*\{\s*get\s*;|public\s+int\s+Wheels\s*\{\s*get\s*;[\s\S]*public\s+string\s+Brand\s*\{\s*get\s*;/), 'public string Brand { get; }'],
+  ['Vehicle constructor (string brand, int wheels)', has(/public\s+Vehicle\s*\(\s*string\s+\w+\s*,\s*int\s+\w+\s*\)/)],
+  ['Describe() uses Brand and Wheels', has(/string\s+Describe\s*\(\s*\)[\s\S]{0,120}Brand[\s\S]{0,60}Wheels/), '$"{Brand} with {Wheels} wheels"'],
+  ['Car inherits from Vehicle', has(/class\s+Car\s*:\s*Vehicle\b/), 'class Car : Vehicle'],
+  ['Car calls base(brand, 4)', has(/Car\s*\(\s*string\s+\w+\s*,\s*int\s+\w+\s*\)\s*:\s*base\s*\(\s*\w+\s*,\s*4\s*\)/), 'public Car(string brand, int doors) : base(brand, 4)'],
+  ['Car has a Doors property', has(/public\s+int\s+Doors\s*\{\s*get/)],
+  ['Motorcycle inherits and calls base(brand, 2)', has(/class\s+Motorcycle\s*:\s*Vehicle[\s\S]*Motorcycle\s*\(\s*string\s+\w+\s*\)\s*:\s*base\s*\(\s*\w+\s*,\s*2\s*\)/)],
+  ['Brand/Describe NOT duplicated in children', c=>(c.match(/\bstring\s+Brand\b/g)||[]).length===1 && (c.match(/\bDescribe\s*\(/g)||[]).length===1, 'Only Vehicle should declare Brand and Describe()']
+ ],
+ hints:['Children only need a constructor (plus Doors for Car). Everything else is inherited.','<code>public Motorcycle(string brand) : base(brand, 2) { }</code> passes the values up to Vehicle\'s constructor.'],
+ answer:`public class Vehicle
+{
+    public string Brand { get; }
+    public int Wheels { get; }
+
+    public Vehicle(string brand, int wheels)
+    {
+        Brand = brand;
+        Wheels = wheels;
+    }
+
+    public string Describe()
+    {
+        return $"{Brand} with {Wheels} wheels";
+    }
+}
+
+public class Car : Vehicle
+{
+    public int Doors { get; }
+
+    public Car(string brand, int doors) : base(brand, 4)
+    {
+        Doors = doors;
+    }
+}
+
+public class Motorcycle : Vehicle
+{
+    public Motorcycle(string brand) : base(brand, 2) { }
+}`},
+{ id:3, title:'3 · Polymorphism', task:`<b>Payroll</b>
+<ol><li><code class="i">Employee(string name, decimal baseSalary)</code>, with read-only <code class="i">Name</code> and <code class="i">BaseSalary</code>, and a <b>virtual</b> <code class="i">decimal CalculatePay()</code> → BaseSalary</li>
+<li><code class="i">Manager : Employee</code> <b>overrides</b> → BaseSalary + 1000</li>
+<li><code class="i">Intern : Employee</code> <b>overrides</b> → BaseSalary * 0.5m</li>
+<li><code class="i">static class Payroll</code> with <code class="i">public static decimal Total(List&lt;Employee&gt; staff)</code> that sums CalculatePay(), with <b>no type checks</b></li></ol>`,
+ starter:`public class Employee
+{
+
+}
+
+// Manager
+
+// Intern
+
+public static class Payroll
+{
+
+}`,
+ checks:[
+  ['CalculatePay is virtual in Employee', has(/public\s+virtual\s+decimal\s+CalculatePay\s*\(\s*\)/), 'public virtual decimal CalculatePay()'],
+  ['Manager inherits from Employee', has(/class\s+Manager\s*:\s*Employee/)],
+  ['Intern inherits from Employee', has(/class\s+Intern\s*:\s*Employee/)],
+  ['Children pass name & salary to base', c=>(c.match(/:\s*base\s*\(\s*\w+\s*,\s*\w+\s*\)/g)||[]).length>=2, ': base(name, baseSalary)'],
+  ['Two overrides of CalculatePay', c=>(c.match(/public\s+override\s+decimal\s+CalculatePay\s*\(\s*\)/g)||[]).length>=2, 'public override decimal CalculatePay()'],
+  ['Manager adds 1000', has(/BaseSalary\s*\+\s*1000/)],
+  ['Intern uses 0.5m', has(/BaseSalary\s*\*\s*0\.5m|0\.5m\s*\*\s*BaseSalary|BaseSalary\s*\/\s*2/), 'Decimal literals need m: 0.5m'],
+  ['Payroll.Total is static and takes List<Employee>', has(/public\s+static\s+decimal\s+Total\s*\(\s*List\s*<\s*Employee\s*>\s*\w+\s*\)/)],
+  ['Total calls CalculatePay() polymorphically', has(/Total\s*\([\s\S]*CalculatePay\s*\(\s*\)/)],
+  ['No "is Manager"/"is Intern" checks', c=>/Total\s*\(/.test(c) && !/\bis\s+(Manager|Intern)\b|GetType\(\)\s*==|typeof\s*\(\s*(Manager|Intern)/.test(c), 'Let polymorphism choose. Don\'t check types.']
+ ],
+ hints:['The children don\'t need new fields, just a constructor that calls base and an override.','Total: <code>decimal total = 0; foreach (Employee e in staff) total += e.CalculatePay(); return total;</code>'],
+ answer:`public class Employee
+{
+    public string Name { get; }
+    public decimal BaseSalary { get; }
+
+    public Employee(string name, decimal baseSalary)
+    {
+        Name = name;
+        BaseSalary = baseSalary;
+    }
+
+    public virtual decimal CalculatePay()
+    {
+        return BaseSalary;
+    }
+}
+
+public class Manager : Employee
+{
+    public Manager(string name, decimal baseSalary) : base(name, baseSalary) { }
+
+    public override decimal CalculatePay()
+    {
+        return BaseSalary + 1000;
+    }
+}
+
+public class Intern : Employee
+{
+    public Intern(string name, decimal baseSalary) : base(name, baseSalary) { }
+
+    public override decimal CalculatePay()
+    {
+        return BaseSalary * 0.5m;
+    }
+}
+
+public static class Payroll
+{
+    public static decimal Total(List<Employee> staff)
+    {
+        decimal total = 0;
+        foreach (Employee e in staff)
+        {
+            total += e.CalculatePay();
+        }
+        return total;
+    }
+}`},
+{ id:4, title:'4 · Abstraction', task:`<b>Shapes</b>
+<ol><li><b>abstract</b> class <code class="i">Shape</code> with <b>abstract</b> <code class="i">double Area()</code> and <code class="i">double Perimeter()</code>, plus a normal <code class="i">string Describe()</code> → <code class="i">"Circle with area 3.14"</code></li>
+<li><code class="i">Circle(double radius)</code>: Area = πr², Perimeter = 2πr (use <code class="i">Math.PI</code>)</li>
+<li><code class="i">Rectangle(double width, double height)</code>: Area = w×h, Perimeter = 2(w+h)</li></ol>`,
+ starter:`public abstract class Shape
+{
+
+}
+
+// Circle
+
+// Rectangle
+`,
+ checks:[
+  ['Shape is abstract', has(/public\s+abstract\s+class\s+Shape/)],
+  ['Area() is abstract with no body', has(/public\s+abstract\s+double\s+Area\s*\(\s*\)\s*;/), 'public abstract double Area();  ← semicolon'],
+  ['Perimeter() is abstract with no body', has(/public\s+abstract\s+double\s+Perimeter\s*\(\s*\)\s*;/)],
+  ['Describe() uses GetType().Name and Area()', has(/Describe\s*\(\s*\)[\s\S]{0,120}GetType\s*\(\s*\)\s*\.\s*Name[\s\S]{0,60}Area\s*\(\s*\)/), '$"{GetType().Name} with area {Area():F2}"'],
+  ['Circle and Rectangle inherit from Shape', has(/class\s+Circle\s*:\s*Shape[\s\S]*class\s+Rectangle\s*:\s*Shape|class\s+Rectangle\s*:\s*Shape[\s\S]*class\s+Circle\s*:\s*Shape/)],
+  ['4 overrides (Area + Perimeter × 2)', c=>(c.match(/override\s+double\s+(Area|Perimeter)\s*\(/g)||[]).length>=4],
+  ['Circle uses Math.PI', has(/Math\.PI/)],
+  ['Dimensions stored in private fields', c=>(c.match(/private\s+(readonly\s+)?double\s+\w+/g)||[]).length>=2 || /private\s+(readonly\s+)?double\s+\w+\s*,\s*\w+/.test(c), 'private readonly double _radius;']
+ ],
+ hints:['An abstract method ends with a <b>semicolon</b>: <code>public abstract double Area();</code>','Circle: <code>public override double Area() => Math.PI * _radius * _radius;</code>'],
+ answer:`public abstract class Shape
+{
+    public abstract double Area();
+    public abstract double Perimeter();
+
+    public string Describe()
+    {
+        return $"{GetType().Name} with area {Area():F2}";
+    }
+}
+
+public class Circle : Shape
+{
+    private readonly double _radius;
+    public Circle(double radius) { _radius = radius; }
+
+    public override double Area() => Math.PI * _radius * _radius;
+    public override double Perimeter() => 2 * Math.PI * _radius;
+}
+
+public class Rectangle : Shape
+{
+    private readonly double _width;
+    private readonly double _height;
+
+    public Rectangle(double width, double height)
+    {
+        _width = width;
+        _height = height;
+    }
+
+    public override double Area() => _width * _height;
+    public override double Perimeter() => 2 * (_width + _height);
+}`},
+{ id:5, title:'5 · Interfaces', task:`<b>Notifications</b>
+<ol><li><code class="i">interface INotifier { string Send(string message); }</code></li>
+<li><code class="i">EmailNotifier</code> → <code class="i">"Email: " + message</code></li>
+<li><code class="i">SmsNotifier</code> → <code class="i">"SMS: " + message</code>, cutting the message to its first 20 characters if it's longer</li>
+<li><code class="i">AlertService(INotifier notifier)</code> stores it privately. <code class="i">string Alert(string message)</code> → <code class="i">notifier.Send("ALERT " + message)</code></li></ol>`,
+ starter:`public interface INotifier
+{
+
+}
+
+// EmailNotifier
+
+// SmsNotifier
+
+// AlertService
+`,
+ checks:[
+  ['INotifier declares string Send(string)', has(/interface\s+INotifier\s*\{[\s\S]*string\s+Send\s*\(\s*string\s+\w+\s*\)\s*;/)],
+  ['EmailNotifier implements INotifier', has(/class\s+EmailNotifier\s*:\s*INotifier/)],
+  ['SmsNotifier implements INotifier', has(/class\s+SmsNotifier\s*:\s*INotifier/)],
+  ['Both Send methods are public', c=>(c.match(/public\s+string\s+Send\s*\(/g)||[]).length>=2, 'Interface methods must be public in the class'],
+  ['SMS checks Length > 20', has(/\.Length\s*>\s*20|\.Length\s*>=\s*21/)],
+  ['SMS cuts with Substring(0, 20)', has(/Substring\s*\(\s*0\s*,\s*20\s*\)/)],
+  ['AlertService has a private INotifier field', has(/private\s+(readonly\s+)?INotifier\s+\w+/)],
+  ['AlertService constructor takes INotifier', has(/AlertService\s*\(\s*INotifier\s+\w+\s*\)/)],
+  ['Alert sends "ALERT " + message', has(/Send\s*\(\s*"ALERT "\s*\+\s*\w+\s*\)/)]
+ ],
+ hints:['Interface members have no body and no access modifier: <code>string Send(string message);</code>','When implementing, write <code>public string Send(string message) { … }</code>, <b>without</b> override.'],
+ answer:`public interface INotifier
+{
+    string Send(string message);
+}
+
+public class EmailNotifier : INotifier
+{
+    public string Send(string message) => "Email: " + message;
+}
+
+public class SmsNotifier : INotifier
+{
+    public string Send(string message)
+    {
+        if (message.Length > 20)
+        {
+            message = message.Substring(0, 20);
+        }
+        return "SMS: " + message;
+    }
+}
+
+public class AlertService
+{
+    private readonly INotifier _notifier;
+
+    public AlertService(INotifier notifier)
+    {
+        _notifier = notifier;
+    }
+
+    public string Alert(string message)
+    {
+        return _notifier.Send("ALERT " + message);
+    }
+}`},
+{ id:6, title:'6 · All four (exam)', task:`<b>Library</b>: late fees
+<ol><li><b>abstract</b> <code class="i">LibraryItem(string title)</code>: read-only <code class="i">Title</code>; <code class="i">DaysLate</code> int backed by a private field (negative → store 0); <b>abstract</b> <code class="i">decimal LateFee()</code></li>
+<li><code class="i">Book</code>: 0.50 per day late</li>
+<li><code class="i">Dvd</code>: 1.00 per day, <b>maximum 10.00</b></li>
+<li><code class="i">Library</code>: private <code class="i">List&lt;LibraryItem&gt;</code>, <code class="i">AddItem(LibraryItem)</code>, <code class="i">decimal TotalFees()</code>, read-only <code class="i">int Count</code></li></ol>Then add comments showing where each pillar appears.`,
+ starter:`public abstract class LibraryItem
+{
+
+}
+
+// Book
+
+// Dvd
+
+public class Library
+{
+
+}`,
+ checks:[
+  ['LibraryItem is abstract with abstract LateFee()', has(/abstract\s+class\s+LibraryItem[\s\S]*abstract\s+decimal\s+LateFee\s*\(\s*\)\s*;/)],
+  ['Title is read-only', has(/public\s+string\s+Title\s*\{\s*get\s*;\s*(private\s+set\s*;\s*)?\}/)],
+  ['Private field behind DaysLate', has(/private\s+int\s+\w+\s*;[\s\S]*DaysLate|DaysLate[\s\S]*private\s+int\s+\w+\s*;/)],
+  ['DaysLate blocks negatives', has(/DaysLate[\s\S]{0,200}value\s*<\s*0|DaysLate[\s\S]{0,200}Math\.Max\s*\(\s*0\s*,\s*value/), 'set => _daysLate = value < 0 ? 0 : value;'],
+  ['Book and Dvd inherit & call base(title)', c=>/class\s+Book\s*:\s*LibraryItem/.test(c) && /class\s+Dvd\s*:\s*LibraryItem/.test(c) && (c.match(/:\s*base\s*\(\s*\w+\s*\)/g)||[]).length>=2],
+  ['Book fee uses 0.50m', has(/override\s+decimal\s+LateFee[\s\S]{0,80}0\.5m|0\.50m/)],
+  ['Dvd fee is capped at 10', has(/Math\.Min\s*\([\s\S]{0,40}10(\.0+)?m|>\s*10(\.0+)?m?[\s\S]{0,60}return\s+10/), 'Math.Min(DaysLate * 1.00m, 10.00m)'],
+  ['Library list is private', has(/private\s+(readonly\s+)?List\s*<\s*LibraryItem\s*>/)],
+  ['TotalFees loops and calls LateFee()', has(/TotalFees\s*\(\s*\)[\s\S]*LateFee\s*\(\s*\)/)],
+  ['Count is read-only', has(/public\s+int\s+Count\s*(=>|\{\s*get)/)]
+ ],
+ hints:['This combines exercises 1, 3 and 4. Build LibraryItem first (abstract + encapsulated DaysLate).','Dvd: <code>return Math.Min(DaysLate * 1.00m, 10.00m);</code>','Library: <code>private readonly List&lt;LibraryItem&gt; _items = new List&lt;LibraryItem&gt;();</code> and <code>public int Count => _items.Count;</code>'],
+ answer:`// ABSTRACTION:   LibraryItem is abstract; LateFee() is abstract.
+// ENCAPSULATION: _daysLate is private; DaysLate's setter blocks negatives;
+//                Library's list is private and only changed through AddItem.
+// INHERITANCE:   Book and Dvd inherit Title/DaysLate from LibraryItem.
+// POLYMORPHISM:  TotalFees() calls item.LateFee(); each type answers differently.
+public abstract class LibraryItem
+{
+    private int _daysLate;
+
+    public string Title { get; }
+
+    public int DaysLate
+    {
+        get => _daysLate;
+        set => _daysLate = value < 0 ? 0 : value;
+    }
+
+    protected LibraryItem(string title)
+    {
+        Title = title;
+    }
+
+    public abstract decimal LateFee();
+}
+
+public class Book : LibraryItem
+{
+    public Book(string title) : base(title) { }
+    public override decimal LateFee() => DaysLate * 0.50m;
+}
+
+public class Dvd : LibraryItem
+{
+    public Dvd(string title) : base(title) { }
+    public override decimal LateFee() => Math.Min(DaysLate * 1.00m, 10.00m);
+}
+
+public class Library
+{
+    private readonly List<LibraryItem> _items = new List<LibraryItem>();
+
+    public int Count => _items.Count;
+
+    public void AddItem(LibraryItem item)
+    {
+        _items.Add(item);
+    }
+
+    public decimal TotalFees()
+    {
+        decimal total = 0;
+        foreach (LibraryItem item in _items)
+        {
+            total += item.LateFee();
+        }
+        return total;
+    }
+}`}
+];
+
+(function(){
+  let cur=0, hintN=0;
+  const ed=document.getElementById('editor');
+  const list=document.getElementById('labList');
+  const draw=()=>{list.innerHTML=''; LAB.forEach((x,i)=>{const b=document.createElement('button'); b.textContent=(store.lab[x.id]?'✅ ':'')+x.title; if(i===cur) b.className='sel'; b.onclick=()=>{saveDraft(); load(i);}; list.appendChild(b);});};
+  const saveDraft=()=>{store.drafts[LAB[cur].id]=ed.value; save();};
+  const load=(i)=>{cur=i; hintN=0; const x=LAB[i];
+    ed.value = store.drafts[x.id] ?? x.starter;
+    document.getElementById('labTask').innerHTML=x.task+`<p style="margin:8px 0 0;font-size:13px;color:var(--muted)">Mac project: <code class="i">Exercises/Ex${x.id}_*.cs</code> → <code class="i">dotnet run -- ${x.id}</code></p>`;
+    document.getElementById('labHintBox').innerHTML='';
+    document.getElementById('labResults').innerHTML='<li style="color:var(--muted)">Press "Check my code".</li>';
+    document.getElementById('labAnswerBox').open=false;
+    renderCode(document.getElementById('labAnswer'), x.answer); draw();};
+  ed.addEventListener('keydown',e=>{ if(e.key==='Tab'){e.preventDefault(); const s=ed.selectionStart; ed.setRangeText('    ',s,ed.selectionEnd,'end');}});
+  let t; ed.addEventListener('input',()=>{clearTimeout(t); t=setTimeout(saveDraft,600);});
+  document.getElementById('labCheck').onclick=()=>{
+    const x=LAB[cur], code=strip(ed.value); let pass=0;
+    const opens=(code.match(/\{/g)||[]).length, closes=(code.match(/\}/g)||[]).length;
+    let html='';
+    if(opens!==closes) html+=`<li>⚠️ <b>Braces don't match</b> (${opens} <code>{</code> vs ${closes} <code>}</code>). This won't compile.</li>`;
+    x.checks.forEach(([label,fn,hint])=>{ let ok=false; try{ok=fn(code);}catch(e){}
+      if(ok) pass++;
+      html+=`<li>${ok?'✅':'❌'} ${esc(label)}${!ok&&hint?`<span class="h">💡 ${esc(hint)}</span>`:''}</li>`;});
+    const all = pass===x.checks.length && opens===closes;
+    html+=`<li style="font-weight:800;border:none;padding-top:10px">${pass}/${x.checks.length} checks passed ${all?'🎉':''}</li>`;
+    if(all){ html+=`<li style="border:none;color:var(--muted);font-size:13.5px">Next: confirm with the real compiler, <code class="i">dotnet run -- ${x.id}</code></li>`; if(!store.lab[x.id]){store.lab[x.id]=true; save(); toast('Exercise '+x.id+' complete!');} draw(); }
+    document.getElementById('labResults').innerHTML=html;
+  };
+  document.getElementById('labHint').onclick=()=>{const h=LAB[cur].hints; if(hintN<h.length){document.getElementById('labHintBox').insertAdjacentHTML('beforeend',`<div class="tip" style="margin:10px 0 0;font-size:14.5px">💡 <b>Hint ${hintN+1}/${h.length}:</b> ${h[hintN]}</div>`); hintN++;} else toast('No more hints. Try the model answer.');};
+  document.getElementById('labCopy').onclick=async()=>{try{await navigator.clipboard.writeText(ed.value); toast('Copied!');}catch(e){ed.select(); toast('Press Ctrl/Cmd + C to copy');}};
+  document.getElementById('labReset').onclick=()=>{ed.value=LAB[cur].starter; saveDraft(); toast('Reset to starter code');};
+  load(0);
+})();
+
+// ===================================================================
+//  EXAM PROBLEMS (model answers compiled & tested)
+// ===================================================================
+const CHALLENGES=[
+{title:'A · Car Park Charges', scenario:`A car park charges by vehicle type. <b>Cars</b> pay $2.00/hour, <b>motorcycles</b> $1.00/hour and <b>trucks</b> $5.00/hour with a <b>minimum charge of $10.00</b>. Every vehicle has a licence plate that cannot change. Hours parked must be at least 1 (anything less is charged as 1 hour). Write classes so the car park can add up the total collected from all vehicles. Printing a vehicle should show e.g. <code class="i">Car SGX1: $6.00</code>.`,
+ plan:`<ul><li><b>Classes:</b> ParkedVehicle (parent), Car, Motorcycle, Truck, CarPark</li>
+<li><b>Inheritance:</b> Car/Motorcycle/Truck <i>is a</i> ParkedVehicle</li>
+<li><b>Abstraction:</b> a plain "ParkedVehicle" shouldn't exist, so make it <code class="i">abstract</code> with <code class="i">abstract decimal Fee()</code></li>
+<li><b>Polymorphism:</b> each type overrides Fee(), and so does <code class="i">ToString()</code>! CarPark loops over <code class="i">List&lt;ParkedVehicle&gt;</code></li>
+<li><b>Encapsulation:</b> Plate is get-only. Hours uses a private field and the setter forces at least 1. The CarPark list is private.</li></ul>`,
+ answer:`public abstract class ParkedVehicle
+{
+    private int _hours;
+    public string Plate { get; }
+    public int Hours
+    {
+        get => _hours;
+        set => _hours = value < 1 ? 1 : value;   // always charge at least 1 hour
+    }
+    protected ParkedVehicle(string plate, int hours)
+    {
+        Plate = plate;
+        Hours = hours;                            // goes through the setter's rule
+    }
+    public abstract decimal Fee();
+    public override string ToString() => $"{GetType().Name} {Plate}: \${Fee():F2}";
+}
+
+public class Car : ParkedVehicle
+{
+    public Car(string plate, int hours) : base(plate, hours) { }
+    public override decimal Fee() => Hours * 2.00m;
+}
+
+public class Motorcycle : ParkedVehicle
+{
+    public Motorcycle(string plate, int hours) : base(plate, hours) { }
+    public override decimal Fee() => Hours * 1.00m;
+}
+
+public class Truck : ParkedVehicle
+{
+    public Truck(string plate, int hours) : base(plate, hours) { }
+    public override decimal Fee() => Math.Max(10.00m, Hours * 5.00m);
+}
+
+public class CarPark
+{
+    private readonly List<ParkedVehicle> _vehicles = new List<ParkedVehicle>();
+    public void Enter(ParkedVehicle v) => _vehicles.Add(v);
+    public decimal TotalCollected()
+    {
+        decimal total = 0;
+        foreach (ParkedVehicle v in _vehicles)
+        {
+            Console.WriteLine(v);                 // ToString() is polymorphic too
+            total += v.Fee();
+        }
+        return total;
+    }
+}
+
+// Test:  Car("SGX1",3) + Motorcycle("FBA2",0) + Truck("YN3",1)
+//  → Car SGX1: $6.00 / Motorcycle FBA2: $1.00 / Truck YN3: $10.00 / total 17.00`},
+{title:'B · Smart Home Hub', scenario:`A smart home has <b>lights</b> and <b>air-cons</b> in different rooms. Every device can be switched on and off, and the hub needs to know whether it is on. When switched on, each device prints its own message: a light prints <code class="i">"Light in Kitchen lights up"</code> and an air-con prints <code class="i">"AirCon in Bedroom cooling to 24°C"</code>. Air-con temperature must stay between 16 and 30 (default 24). A <b>Hub</b> can turn all connected devices on or off and count how many are on. In future, other companies' gadgets (for example a robot vacuum) must be able to connect to the hub too.`,
+ plan:`<ul><li><b>Interface:</b> "other companies' gadgets must connect" means the Hub depends on a <i>contract</i>, <code class="i">ISwitchable</code>, not on a class</li>
+<li><b>Abstract class:</b> Device implements ISwitchable once (IsOn, TurnOn/TurnOff) and leaves <code class="i">abstract OnMessage()</code> for each child</li>
+<li><b>Inheritance:</b> Light and AirCon are Devices</li>
+<li><b>Polymorphism:</b> OnMessage() differs, and Hub loops over <code class="i">List&lt;ISwitchable&gt;</code></li>
+<li><b>Encapsulation:</b> IsOn has a private set. Temperature is validated to 16–30.</li></ul>`,
+ answer:`public interface ISwitchable
+{
+    bool IsOn { get; }
+    void TurnOn();
+    void TurnOff();
+}
+
+public abstract class Device : ISwitchable
+{
+    public string Room { get; }
+    public bool IsOn { get; private set; }
+
+    protected Device(string room) { Room = room; }
+
+    public void TurnOn()
+    {
+        IsOn = true;
+        Console.WriteLine(OnMessage());
+    }
+
+    public void TurnOff()
+    {
+        IsOn = false;
+        Console.WriteLine($"{GetType().Name} in {Room} is off");
+    }
+
+    protected abstract string OnMessage();       // each device says something different
+}
+
+public class Light : Device
+{
+    public Light(string room) : base(room) { }
+    protected override string OnMessage() => $"Light in {Room} lights up";
+}
+
+public class AirCon : Device
+{
+    private int _temperature = 24;
+    public AirCon(string room) : base(room) { }
+
+    public int Temperature
+    {
+        get => _temperature;
+        set { if (value >= 16 && value <= 30) _temperature = value; }
+    }
+
+    protected override string OnMessage() => $"AirCon in {Room} cooling to {Temperature}°C";
+}
+
+public class Hub
+{
+    private readonly List<ISwitchable> _devices = new List<ISwitchable>();
+
+    public void Connect(ISwitchable d) => _devices.Add(d);
+    public void AllOn()  { foreach (ISwitchable d in _devices) d.TurnOn(); }
+    public void AllOff() { foreach (ISwitchable d in _devices) d.TurnOff(); }
+
+    public int CountOn()
+    {
+        int n = 0;
+        foreach (ISwitchable d in _devices) if (d.IsOn) n++;
+        return n;
+    }
+}`},
+{title:'C · Online Shop Cart', scenario:`An online shop sells <b>digital products</b> (no shipping) and <b>physical products</b> (shipping is $3.00 for up to 1 kg, plus $1.50 for every extra kg). A product's price must never be negative. If someone tries to set one, <b>throw an exception</b>. A shopping cart holds products and can apply a discount code from <b>0% to 50%</b> (invalid codes are rejected and return false). The cart total = sum of (price + shipping) for every product, minus the discount.`,
+ plan:`<ul><li><b>Abstract</b> Product with <code class="i">abstract decimal ShippingCost()</code> and a shared <code class="i">TotalCost()</code> = Price + ShippingCost()</li>
+<li><b>Inheritance:</b> DigitalProduct and PhysicalProduct (which adds WeightKg)</li>
+<li><b>Polymorphism:</b> ShippingCost() differs, and the Cart just sums TotalCost()</li>
+<li><b>Encapsulation (two styles!):</b> Price <i>throws</i> on bad input, and ApplyDiscount <i>returns false</i>. Both are valid, so read which one the question asks for.</li></ul>`,
+ answer:`public abstract class Product
+{
+    private decimal _price;
+    public string Name { get; }
+
+    public decimal Price
+    {
+        get => _price;
+        set
+        {
+            if (value < 0) throw new ArgumentException("Price cannot be negative");
+            _price = value;
+        }
+    }
+
+    protected Product(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+    }
+
+    public abstract decimal ShippingCost();
+    public decimal TotalCost() => Price + ShippingCost();
+}
+
+public class DigitalProduct : Product
+{
+    public DigitalProduct(string name, decimal price) : base(name, price) { }
+    public override decimal ShippingCost() => 0;
+}
+
+public class PhysicalProduct : Product
+{
+    public double WeightKg { get; }
+
+    public PhysicalProduct(string name, decimal price, double weightKg) : base(name, price)
+    {
+        WeightKg = weightKg;
+    }
+
+    public override decimal ShippingCost()
+    {
+        if (WeightKg <= 1) return 3.00m;
+        return 3.00m + (decimal)(WeightKg - 1) * 1.50m;
+    }
+}
+
+public class ShoppingCart
+{
+    private readonly List<Product> _items = new List<Product>();
+    private int _discountPercent;
+
+    public void Add(Product p) => _items.Add(p);
+
+    public bool ApplyDiscount(int percent)
+    {
+        if (percent < 0 || percent > 50) return false;
+        _discountPercent = percent;
+        return true;
+    }
+
+    public decimal Total()
+    {
+        decimal sum = 0;
+        foreach (Product p in _items) sum += p.TotalCost();
+        return sum * (100 - _discountPercent) / 100m;
+    }
+}
+
+// Test: Digital "Game" $20 + Physical "Book" $30, 3 kg (shipping 6.00)
+//       ApplyDiscount(80) → false;  ApplyDiscount(10) → true;  Total() → 50.40`}
+];
+(function(){
+  const box=document.getElementById('challengeList');
+  CHALLENGES.forEach(c=>{
+    const d=document.createElement('div'); d.className='card';
+    d.innerHTML=`<h3 style="margin-top:0">${c.title}</h3><div class="task-box">${c.scenario}</div>
+    <p style="font-size:14px;color:var(--muted)">⏱ Give yourself ~25 minutes. Plan on paper first, write the code in your IDE, and test it in Main.</p>
+    <details><summary>🧭 Step 1: check your plan (which pillar goes where?)</summary>${c.plan}</details>
+    <details><summary>👀 Step 2: model answer</summary><pre class="code"></pre></details>`;
+    renderCode(d.querySelector('pre'), c.answer);
+    box.appendChild(d);
+  });
+})();
+
+// ===================================================================
+//  MOCK TEST
+// ===================================================================
+const TEST=[
+ {q:'A <code>Temperature</code> class stores degrees in a private field. Its setter rejects values below -273.15. Which pillar is this mainly?', o:['Encapsulation','Inheritance','Polymorphism','Abstraction'], a:0, e:'Private data plus a validated setter is encapsulation.'},
+ {q:'<code>class Teacher : Person</code> mainly demonstrates…', o:['Encapsulation','Inheritance','Overloading','Interfaces'], a:1, e:'<code>:</code> followed by a class name means Teacher inherits from Person ("Teacher is a Person").'},
+ {q:'What is printed?', code:'class Animal { public virtual string Speak() => "..."; }\nclass Cat : Animal { public override string Speak() => "Meow"; }\n\nAnimal a = new Cat();\nConsole.WriteLine(a.Speak());', o:['...','Meow','Compile error','Cat'], a:1, e:'virtual + override means the real object (a Cat) decides at runtime.'},
+ {q:'What is printed?', code:'class Animal { public string Move() => "moves"; }\nclass Dog : Animal { public new string Move() => "runs"; }\n\nAnimal a = new Dog();\nConsole.WriteLine(a.Move());', o:['runs','moves','Compile error','runs moves'], a:1, e:'Move is not virtual. <code>new</code> only <i>hides</i> it, so the variable type (Animal) decides and it prints "moves".'},
+ {q:'Shape is abstract. Which line does NOT compile?', code:'Shape a = new Circle(2);          // line 1\nShape b = new Shape();            // line 2\nList<Shape> list = new List<Shape>(); // line 3\nCircle c = new Circle(1);         // line 4', o:['Line 1','Line 2','Line 3','Line 4'], a:1, e:'You can\'t <code>new</code> an abstract class (CS0144). An abstract <i>type</i> can still be used for variables and lists.'},
+ {q:'Which statement about C# is TRUE?', o:['A class can inherit from several classes','A class can implement several interfaces but inherit only one class','Interfaces can contain private fields','An abstract class cannot have a constructor'], a:1, e:'C# has single inheritance for classes and multiple interfaces. Abstract classes <i>can</i> have constructors, which children call via base.'},
+ {q:'In <code>public Car(string brand) : base(brand, 4) { }</code>, what does <code>base(brand, 4)</code> do?', o:['Creates a second Vehicle object','Calls the parent class constructor before Car\'s body runs','Overrides the parent constructor','Makes Car abstract'], a:1, e:'It runs the parent\'s constructor first to set up the inherited part of the same object.'},
+ {q:'A member should be visible inside its class and in child classes, but NOT outside. Use…', o:['public','private','protected','static'], a:2, e:'protected = this class plus its subclasses.'},
+ {q:'Two methods named <code>Area</code> in the same class, one taking <code>(double r)</code> and one taking <code>(double w, double h)</code>, are…', o:['Overriding','Overloading','Hiding','Inheritance'], a:1, e:'Same name with different parameter lists is overloading (compile-time polymorphism).'},
+ {q:'This code gives a compile error. What is the fix?', code:'class Employee { public decimal Pay() => 3000; }\nclass Manager : Employee { public override decimal Pay() => 4000; }', o:['Add <code>virtual</code> to Employee.Pay()','Remove <code>public</code> from Manager.Pay()','Make Manager abstract','Rename Manager.Pay() to Pay2()'], a:0, e:'You can only override a method marked virtual, abstract or override (CS0506).'},
+ {q:'<code>public double Price;</code> is a public field, and code elsewhere sets <code>item.Price = -5;</code>. What is the best OOP fix?', o:['Add a comment','Make Price <code>static</code>','Use a private field plus a Price property whose setter rejects negatives','Check for negatives everywhere Price is used'], a:2, e:'Put the rule in one place (the setter) so invalid data can never get in. That is encapsulation.'},
+ {q:'A payment system calls <code>processor.Pay(amount)</code> without knowing whether <code>processor</code> is PayPal, a card or GrabPay. Which pillars are working here?', o:['Encapsulation only','Inheritance only','Abstraction (a common contract) and Polymorphism (the right Pay runs)','None, it\'s just a method call'], a:2, e:'An interface or abstract type hides the "how" (abstraction), and each concrete class\'s Pay() runs at runtime (polymorphism).'},
+ {q:'<code>class Triangle : Shape { }</code>, where Shape has <code>public abstract double Area();</code>. What happens?', o:['Compiles; Area returns 0','Compile error: Triangle doesn\'t implement Area() (unless Triangle is also abstract)','Runtime error when Area() is called','Triangle automatically inherits a default Area()'], a:1, e:'An abstract member is a promise, and concrete children must keep it (CS0534).'},
+ {q:'Which relationship should NOT use inheritance?', o:['Square → Shape','SavingsAccount → BankAccount','Computer → Keyboard','Manager → Employee'], a:2, e:'A computer <i>has a</i> keyboard, so make the keyboard a field (composition). The others pass the "is-a" test.'},
+ {q:'What is printed?', code:'class Rect\n{\n    protected double W, H;\n    public Rect(double w, double h) { W = w; H = h; }\n    public virtual double Area() => W * H;\n}\nclass Square : Rect\n{\n    public Square(double s) : base(s, s) { }\n}\n\nvar list = new List<Rect> { new Rect(2, 3), new Square(2) };\ndouble total = 0;\nforeach (Rect r in list) total += r.Area();\nConsole.WriteLine(total);', o:['6','8','10','Compile error'], a:2, e:'Rect(2,3) → 6. Square(2) calls base(2,2) and inherits Area(), giving 4. 6 + 4 = <b>10</b>.'},
+ {q:'Which property is read-only from outside but can still be changed by the class\'s own methods?', o:['<code>public int Lives { get; set; }</code>','<code>public int Lives { get; private set; }</code>','<code>public int Lives;</code>','<code>private int Lives { get; set; }</code>'], a:1, e:'<code>private set</code>: outsiders can read it, and only the class itself can write it.'}
+];
+(function(){
+  let order=[], answers={};
+  const box=document.getElementById('testBox'), res=document.getElementById('testResult');
+  const best=()=>{document.getElementById('testBest').textContent = store.test ? `Best score: ${store.test}/${TEST.length}` : 'Not attempted yet';};
+  const build=(shuffle)=>{
+    order=TEST.map((_,i)=>i); if(shuffle) order.sort(()=>Math.random()-.5);
+    answers={}; res.innerHTML=''; box.innerHTML='';
+    order.forEach((ti,n)=>{
+      const q=TEST[ti]; const d=document.createElement('div'); d.className='q'; d.id='tq'+ti;
+      d.innerHTML=`<div class="qt">${n+1}. ${q.q}</div>${q.code?'<pre class="code"></pre>':''}<div class="opts"></div><div class="explain" hidden></div>`;
+      if(q.code) renderCode(d.querySelector('pre'), q.code);
+      q.o.forEach((o,oi)=>{const b=document.createElement('button'); b.className='opt'; b.innerHTML=o;
+        b.onclick=()=>{ if(d.dataset.locked) return; answers[ti]=oi; d.querySelectorAll('.opt').forEach((x,xi)=>x.classList.toggle('chosen',xi===oi)); };
+        d.querySelector('.opts').appendChild(b);});
+      box.appendChild(d);
+    });
+    document.getElementById('testSubmit').disabled=false;
+  };
+  document.getElementById('testSubmit').onclick=()=>{
+    const missing=order.filter(i=>answers[i]===undefined).length;
+    if(missing){ toast(`${missing} question${missing>1?'s':''} still unanswered`); const first=order.find(i=>answers[i]===undefined); document.getElementById('tq'+first).scrollIntoView({behavior:'smooth',block:'center'}); return; }
+    let score=0;
+    order.forEach(ti=>{const q=TEST[ti], d=document.getElementById('tq'+ti); d.dataset.locked=1; const ok=answers[ti]===q.a; if(ok) score++;
+      d.querySelectorAll('.opt').forEach((x,xi)=>{x.classList.remove('chosen'); if(xi===q.a) x.classList.add('right'); else if(xi===answers[ti]) x.classList.add('wrong'); x.disabled=true;});
+      const ex=d.querySelector('.explain'); ex.hidden=false; ex.className='explain'+(ok?' good':''); ex.innerHTML=(ok?'✅ ':'❌ ')+q.e;});
+    if(score>store.test){store.test=score; save();} best();
+    const msg = score>=14 ? '🏆 Excellent. You\'re test-ready! Keep practising the Exam Problems to stay sharp.' : score>=10 ? '👍 Good foundation. Review the ❌ explanations, then revisit those pillar tabs.' : '📚 Go back through the pillar tabs and the Code Lab, then retake. Each attempt is shuffled.';
+    res.innerHTML=`<div class="card" style="text-align:center"><div class="score-big">${score} / ${TEST.length}</div><p>${msg}</p></div>`;
+    document.getElementById('testSubmit').disabled=true;
+    res.scrollIntoView({behavior:'smooth'});
+  };
+  document.getElementById('testRetake').onclick=()=>{build(true); window.scrollTo({top:0,behavior:'smooth'});};
+  build(false); best();
+})();
+
+updateProgress();
+show();
+</script>
+</body>
+</html>
